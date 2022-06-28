@@ -1,0 +1,23 @@
+html {
+	height: 100%;
+	margin: auto;
+	display: table;
+}
+body {
+	display: table-cell;
+	text-align: center;
+	vertical-align: middle;
+	font-family: sans-serif;
+	font-size: xx-large;
+	color: white;
+	background-color: dimgray;
+}
+
+img {
+	position: fixed;
+	right: 1vw;
+	bottom: 1vh;
+}
+img.data {
+	display: none;
+}
