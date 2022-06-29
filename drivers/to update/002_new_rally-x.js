@@ -280,7 +280,7 @@ class NewRallyX {
 			data[p + 0x300] = data[p + 0x301] = data[p + 0x302] = data[p + 0x303] = 0x12;
 			break;
 		case 1:
-			//透明
+			//transparent
 			break;
 		case 2:
 			data[p + 0x000] = data[p + 0x001] = data[p + 0x002] = data[p + 0x003] = 0x11;
@@ -299,7 +299,7 @@ class NewRallyX {
 			data[p + 0x100] = data[p + 0x101] = 0x10;
 			break;
 		case 5:
-			//透明
+			//transparent
 			break;
 		case 6:
 			data[p + 0x000] = data[p + 0x001] = 0x11;

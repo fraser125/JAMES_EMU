@@ -75,7 +75,7 @@ class Xevious {
 	timer = new Timer(Math.floor(18432000 / 384));
 
 	constructor() {
-		//SETUP CPU
+		// SETUP CPU
 		const range = (page, start, end = start, mirror = 0) => (page & ~mirror) >= start && (page & ~mirror) <= end;
 		const interrupt = (_mcu) => {
 			_mcu.cause = _mcu.cause & ~4 | !_mcu.interrupt() << 2;
@@ -199,10 +199,10 @@ class Xevious {
 		this.mcu[0].r = 0xffff;
 		this.mcu[1].rom.set(KEY);
 
-		//DIPSW SETUP
+		// DIPSW SETUP
 		this.mmi.fill(3, 0, 8);
 
-		////
+		// //
 		for (let i = 0; i < 0x80; i++)
 			for (let j = 0; j < 0x100; j++) {
 				const k = (i >> 1) * 0x80 + (j >> 1), l = [0, 2, 1, 3][MAPTBL[k >> 1] >> 1 + (k << 2 & 4) & 3];
@@ -246,13 +246,14 @@ class Xevious {
 		if (this.mcu[1].mask & 4)
 			for (this.mcu[1].execute(); this.mcu[1].pc !== 0x4c; this.mcu[1].execute()) {}
 	}
+
 	
 	reset() {
 		this.fReset = true;
 	}
 
 	updateStatus() {
-		//DIP SWITCH UPDATE
+		// DIP SWITCH UPDATE
 		if (this.fDIPSwitchChanged) {
 			this.fDIPSwitchChanged = false;
 			switch (this.nSolvalou) {
@@ -315,7 +316,7 @@ class Xevious {
 
 		this.mcu[0].r = this.mcu[0].r & ~0x8000 | !this.fTest << 15;
 
-		//RESET
+		// RESET
 		if (this.fReset) {
 			this.fReset = false;
 			sound[1].reset();
@@ -377,81 +378,81 @@ class Xevious {
 		if (!(this.updated = flag))
 			return this.bitmap;
 
-		//bg4 drawing
+		// bg4 drawing
 		let p = 256 * (16 - (this.dwScroll + 4 & 7)) + 232;
 		for (let k = 0x80 + ((this.dwScroll + 4 >> 3) + 2 & 0x3f), i = 0; i < 28; k = k + 27 & 0x3f | k + 0x40 & 0x7c0, p -= 256 * 8 * 37 + 8, i++)
 			for (let j = 0; j < 37; k = k + 1 & 0x3f | k & 0x7c0, p += 256 * 8, j++)
 				this.xfer8x8x2(this.bitmap, p, k);
 
-		//obj drawing
+		// obj drawing
 		for (let k = 0xf80, i = 64; i !== 0; k += 2, --i) {
 			const x = this.ram[k] + 1 & 0xff;
 			const y = (this.ram[k + 1] | this.ram[k + 0x801] << 8) - 24 & 0x1ff;
 			const src = this.ram[k + 0x1000] | this.ram[k + 0x800] << 1 & 0x100 | this.ram[k + 0x1001] << 9;
 			switch (this.ram[k + 0x800] & 0x0f) {
-			case 0x00: //normal
+			case 0x00: // normal
 				this.xfer16x16(this.bitmap, x | y << 8, src);
 				break;
-			case 0x04: //V invert
+			case 0x04: // V invert
 				this.xfer16x16V(this.bitmap, x | y << 8, src);
 				break;
-			case 0x08: //H invert
+			case 0x08: // H invert
 				this.xfer16x16H(this.bitmap, x | y << 8, src);
 				break;
-			case 0x0c: //HV invert
+			case 0x0c: // HV invert
 				this.xfer16x16HV(this.bitmap, x | y << 8, src);
 				break;
-			case 0x01: //normal
+			case 0x01: // normal
 				this.xfer16x16(this.bitmap, x | y << 8, src & ~1);
 				this.xfer16x16(this.bitmap, x | (y + 16 & 0x1ff) << 8, src | 1);
 				break;
-			case 0x05: //V invert
+			case 0x05: // V invert
 				this.xfer16x16V(this.bitmap, x | y << 8, src | 1);
 				this.xfer16x16V(this.bitmap, x | (y + 16 & 0x1ff) << 8, src & ~1);
 				break;
-			case 0x09: //H invert
+			case 0x09: // H invert
 				this.xfer16x16H(this.bitmap, x | y << 8, src & ~1);
 				this.xfer16x16H(this.bitmap, x | (y + 16 & 0x1ff) << 8, src | 1);
 				break;
-			case 0x0d: //HV invert
+			case 0x0d: // HV invert
 				this.xfer16x16HV(this.bitmap, x | y << 8, src | 1);
 				this.xfer16x16HV(this.bitmap, x | (y + 16 & 0x1ff) << 8, src & ~1);
 				break;
-			case 0x02: //normal
+			case 0x02: // normal
 				this.xfer16x16(this.bitmap, x | y << 8, src | 2);
 				this.xfer16x16(this.bitmap, (x + 16 & 0xff) | y << 8, src & ~2);
 				break;
-			case 0x06: //V invert
+			case 0x06: // V invert
 				this.xfer16x16V(this.bitmap, x | y << 8, src | 2);
 				this.xfer16x16V(this.bitmap, (x + 16 & 0xff) | y << 8, src & ~2);
 				break;
-			case 0x0a: //H invert
+			case 0x0a: // H invert
 				this.xfer16x16H(this.bitmap, x | y << 8, src & ~2);
 				this.xfer16x16H(this.bitmap, (x + 16 & 0xff) | y << 8, src | 2);
 				break;
-			case 0x0e: //HV invert
+			case 0x0e: // HV invert
 				this.xfer16x16HV(this.bitmap, x | y << 8, src & ~2);
 				this.xfer16x16HV(this.bitmap, (x + 16 & 0xff) | y << 8, src | 2);
 				break;
-			case 0x03: //normal
+			case 0x03: // normal
 				this.xfer16x16(this.bitmap, x | y << 8, src & ~3 | 2);
 				this.xfer16x16(this.bitmap, x | (y + 16 & 0x1ff) << 8, src | 3);
 				this.xfer16x16(this.bitmap, (x + 16 & 0xff) | y << 8, src & ~3);
 				this.xfer16x16(this.bitmap, (x + 16 & 0xff) | (y + 16 & 0x1ff) << 8, src & ~3 | 1);
 				break;
-			case 0x07: //V invert
+			case 0x07: // V invert
 				this.xfer16x16V(this.bitmap, x | y << 8, src | 3);
 				this.xfer16x16V(this.bitmap, x | (y + 16 & 0x1ff) << 8, src & ~3 | 2);
 				this.xfer16x16V(this.bitmap, (x + 16 & 0xff) | y << 8, src & ~3 | 1);
 				this.xfer16x16V(this.bitmap, (x + 16 & 0xff) | (y + 16 & 0x1ff) << 8, src & ~3);
 				break;
-			case 0x0b: //H invert
+			case 0x0b: // H invert
 				this.xfer16x16H(this.bitmap, x | y << 8, src & ~3);
 				this.xfer16x16H(this.bitmap, x | (y + 16 & 0x1ff) << 8, src & ~3 | 1);
 				this.xfer16x16H(this.bitmap, (x + 16 & 0xff) | y << 8, src & ~3 | 2);
 				this.xfer16x16H(this.bitmap, (x + 16 & 0xff) | (y + 16 & 0x1ff) << 8, src | 3);
 				break;
-			case 0x0f: //HV invert
+			case 0x0f: // HV invert
 				this.xfer16x16HV(this.bitmap, x | y << 8, src & ~3 | 1);
 				this.xfer16x16HV(this.bitmap, x | (y + 16 & 0x1ff) << 8, src & ~3);
 				this.xfer16x16HV(this.bitmap, (x + 16 & 0xff) | y << 8, src | 3);
@@ -460,13 +461,13 @@ class Xevious {
 			}
 		}
 
-		//bg2 drawing
+		// bg2 drawing
 		p = 256 * 8 * 2 + 234;
 		for (let k = 0x2084, i = 0; i < 29; k += 28, p -= 256 * 8 * 36 + 8, i++)
 			for (let j = 0; j < 36; k++, p += 256 * 8, j++)
 				this.xfer8x8x1(this.bitmap, p, k);
 
-		//update palette
+		// update palette
 		p = 256 * 16 + 16;
 		for (let i = 0; i < 288; p += 256 - 224, i++)
 			for (let j = 0; j < 224; p++, j++)
@@ -480,7 +481,7 @@ class Xevious {
 		const idx = this.ram[k + 0x2800] & 0x3c | this.ram[k + 0x3800] >> 1 & 0x40 | this.ram[k + 0x2800] << 7 & 0x180;
 
 		switch (this.ram[k + 0x2800] >> 6) {
-		case 0: //normal
+		case 0: // normal
 			data[p + 0x000] = this.bgcolor[idx | this.bg4[q | 0x00]];
 			data[p + 0x001] = this.bgcolor[idx | this.bg4[q | 0x01]];
 			data[p + 0x002] = this.bgcolor[idx | this.bg4[q | 0x02]];
@@ -546,7 +547,7 @@ class Xevious {
 			data[p + 0x706] = this.bgcolor[idx | this.bg4[q | 0x3e]];
 			data[p + 0x707] = this.bgcolor[idx | this.bg4[q | 0x3f]];
 			break;
-		case 1: //V invert
+		case 1: // V invert
 			data[p + 0x000] = this.bgcolor[idx | this.bg4[q | 0x38]];
 			data[p + 0x001] = this.bgcolor[idx | this.bg4[q | 0x39]];
 			data[p + 0x002] = this.bgcolor[idx | this.bg4[q | 0x3a]];
@@ -612,7 +613,7 @@ class Xevious {
 			data[p + 0x706] = this.bgcolor[idx | this.bg4[q | 0x06]];
 			data[p + 0x707] = this.bgcolor[idx | this.bg4[q | 0x07]];
 			break;
-		case 2: //H invert
+		case 2: // H invert
 			data[p + 0x000] = this.bgcolor[idx | this.bg4[q | 0x07]];
 			data[p + 0x001] = this.bgcolor[idx | this.bg4[q | 0x06]];
 			data[p + 0x002] = this.bgcolor[idx | this.bg4[q | 0x05]];
@@ -678,7 +679,7 @@ class Xevious {
 			data[p + 0x706] = this.bgcolor[idx | this.bg4[q | 0x39]];
 			data[p + 0x707] = this.bgcolor[idx | this.bg4[q | 0x38]];
 			break;
-		case 3: //HV invert
+		case 3: // HV invert
 			data[p + 0x000] = this.bgcolor[idx | this.bg4[q | 0x3f]];
 			data[p + 0x001] = this.bgcolor[idx | this.bg4[q | 0x3e]];
 			data[p + 0x002] = this.bgcolor[idx | this.bg4[q | 0x3d]];
@@ -752,7 +753,7 @@ class Xevious {
 		const color = this.ram[k] >> 2 & 0xf | this.ram[k] << 4 & 0x30;
 
 		switch (this.ram[k] >> 7) {
-		case 0: //normal
+		case 0: // normal
 			this.bg2[q | 0x00] && (data[p + 0x000] = color);
 			this.bg2[q | 0x01] && (data[p + 0x001] = color);
 			this.bg2[q | 0x02] && (data[p + 0x002] = color);
@@ -818,7 +819,7 @@ class Xevious {
 			this.bg2[q | 0x3e] && (data[p + 0x706] = color);
 			this.bg2[q | 0x3f] && (data[p + 0x707] = color);
 			break;
-		case 1: //H invert
+		case 1: // H invert
 			this.bg2[q | 0x07] && (data[p + 0x000] = color);
 			this.bg2[q | 0x06] && (data[p + 0x001] = color);
 			this.bg2[q | 0x05] && (data[p + 0x002] = color);
@@ -948,14 +949,10 @@ class Xevious {
 
 class SuperXevious extends Xevious {
 	
-	updateInput() {
-		//this.mcu[0].r = this.mcu[0].r & ~0x4c0f | this.dwStick | !this.fCoin << 14 | !this.fStart1P << 10 | !this.fStart2P << 11;
-		
-		//this.mcu[0].r |= 0x8000;
-		this.mcu[0].r = 0x8080
-		
-		//this.fCoin -= !!this.fCoin, this.fStart1P -= !!this.fStart1P, this.fStart2P -= !!this.fStart2P;
-		return this;
+	constructor() {
+		super();
+		this.mmi.fill(3, 0, 7);
+		this.mmi[7] = 2;
 	}
 }
 
@@ -1733,7 +1730,7 @@ const RomSetInfo = [
 	},
 ]
 
-let ROM_INDEX = 0
+let ROM_INDEX = 4
 console.log("TOTAL ROMSETS AVALIBLE: "+RomSetInfo.length)
 console.log("GAME INDEX: "+(ROM_INDEX+1))
 
