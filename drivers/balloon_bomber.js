@@ -5,6 +5,7 @@
  */
 
 import {init} from '../libs/EMU.js/main.js';
+import RomBootLoader from '../libs/RomBootLoader/RomBootLoader.js';
 import I8080 from '../libs/EMU.js/devices/CPU/i8080.js';
 let game, sound;
 
@@ -233,21 +234,64 @@ class BalloonBomber {
 	}
 }
 
+
 /*
  *
  *	Balloon Bomber
  *
  */
 
-import {ROM} from "../roms/balloon_bomber.png.js";
+
+
+const RBL = new RomBootLoader();
+
+const RomSetInfo = [
+	{
+		// Mame name  'ballbomb'
+		display_name: 'Balloon Bomber',
+		developer: 'Taito',
+		year: '1980',
+		Notes: '',
+
+		archive_name: 'ballbomb',
+		driver: BalloonBomber,
+		mappings: [
+		{
+			name: 'PRG1',
+			roms: ['tn01', 'tn02', 'tn03', 'tn04'],
+		},
+		{
+			name: 'PRG2',
+			roms: ['tn05-1'],
+		},
+		{
+			name: 'MAP',
+			roms: ['tn06','tn07'],
+		},
+		]
+	},
+
+]
+
+
+let ROM_INDEX = RomSetInfo.length-1
+console.log("TOTAL ROMSETS AVALIBLE: "+RomSetInfo.length)
+console.log("GAME INDEX: "+(ROM_INDEX+1))
 
 let PRG1, PRG2, MAP;
-window.addEventListener('load', () => expand(ROM).then(ROM => {
-	PRG1 = new Uint8Array(ROM.buffer, 0x0, 0x2000).addBase();
-	PRG2 = new Uint8Array(ROM.buffer, 0x2000, 0x800).addBase();
-	MAP = new Uint8Array(ROM.buffer, 0x2800, 0x800);
-	game = new BalloonBomber();
-	sound = [];
-	
-	init({game, sound});
-}));
+window.addEventListener('load', () =>
+	RBL.Load_Rom(RomSetInfo[ROM_INDEX]).then((ROM) => {
+		
+		PRG1  = ROM["PRG1" ].addBase();
+		PRG2  = ROM["PRG2" ].addBase();
+		MAP   = ROM["MAP"  ].addBase();
+		
+		game  = new ROM.settings.driver();
+		sound = [];
+		
+		canvas.addEventListener('click', () => game.coin(true));
+		init({game, sound});
+		
+	})
+);
+
