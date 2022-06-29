@@ -1,6 +1,6 @@
 /*
  *
- *	Xevious
+ *	Xevious / Super Xevious
  *
  */
  
