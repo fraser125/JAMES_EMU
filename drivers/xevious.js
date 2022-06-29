@@ -6,7 +6,6 @@
  
 /* TODO:
  * 
- * ADD Super Xevious
  * ADD Battles (bootlegs)
  * 
  */
@@ -1398,7 +1397,7 @@ const RomSetInfo = [
 		display_name: 'Super Xevious',
 		developer: 'Namco',
 		year: '1984',
-		Notes: 'FAILS TO BOOT',
+		Notes: '',
 
 		driver: SuperXevious,
 		romsets: [
@@ -1505,7 +1504,7 @@ const RomSetInfo = [
 		display_name: 'Super Xevious (Japan)',
 		developer: 'Namco',
 		year: '1984',
-		Notes: 'FAILS TO BOOT',
+		Notes: '',
 
 		driver: SuperXevious,
 		romsets: [
@@ -1730,7 +1729,7 @@ const RomSetInfo = [
 	},
 ]
 
-let ROM_INDEX = 4
+let ROM_INDEX = 0
 console.log("TOTAL ROMSETS AVALIBLE: "+RomSetInfo.length)
 console.log("GAME INDEX: "+(ROM_INDEX+1))
 
