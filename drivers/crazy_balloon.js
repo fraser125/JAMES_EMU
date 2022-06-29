@@ -374,18 +374,3 @@ window.addEventListener('load', () =>
 		
 	})
 );
-
-
-/*
-import {ROM} from "../roms/crazy_balloon.png.js";
-let PRG, BG, OBJ;
-
-window.addEventListener('load', () => expand(ROM).then(ROM => {
-	PRG = new Uint8Array(ROM.buffer, 0x0, 0x3000).addBase();
-	BG = new Uint8Array(ROM.buffer, 0x3000, 0x800);
-	OBJ = new Uint8Array(ROM.buffer, 0x3800, 0x800);
-	game = new CrazyBalloon();
-	sound = [];
-	init({game, sound});
-}));
-*/
