@@ -2,9 +2,13 @@
  *
  *	Polaris
  *
+ * 
+ * - polariso doesnt boot.
+ * 
  */
 
 import {init} from '../libs/EMU.js/main.js';
+import RomBootLoader from '../libs/RomBootLoader/RomBootLoader.js';
 import I8080 from '../libs/EMU.js/devices/CPU/i8080.js';
 let game, sound;
 
@@ -231,17 +235,177 @@ class Polaris {
  *	Polaris
  *
  */
+ 
 
-import {ROM} from "../roms/polaris.png.js";
-let PRG1, PRG2, MAP /* , OBJ */;
 
-window.addEventListener('load', () => expand(ROM).then(ROM => {
-	PRG1 = new Uint8Array(ROM.buffer, 0x0, 0x2000).addBase();
-	PRG2 = new Uint8Array(ROM.buffer, 0x2000, 0x1800).addBase();
-	MAP = new Uint8Array(ROM.buffer, 0x3800, 0x400);
-	game = new Polaris();
-	sound = [];
-	canvas.addEventListener('click', () => game.coin(true));
-	init({game, sound});
-}));
+const RBL = new RomBootLoader();
+
+const RomSetInfo = [
+	{
+		// Mame name  'polaris'
+		display_name: 'Polaris (latest version)',
+		developer: 'Taito',
+		year: '1980',
+		Notes: '',
+
+		archive_name: 'polaris',
+		driver: Polaris,
+		mappings: [
+		{
+			name: 'MAP',
+			roms: ['ps08.1b'],
+		},
+		{
+			name: 'PRG1',
+			roms: ['ps01-1.30', 'ps02.36', 'ps03-1.31', 'ps04.37'],
+		},
+		{
+			name: 'PRG2',
+			roms: ['ps05.32', 'ps06.38', 'ps26'],
+		},
+		{
+			name: 'OBJ',
+			roms: ['ps07.2c'],
+		},
+		]
+	},
+	
+	
+	{
+		// Mame name  'polarisa'
+		display_name: 'Polaris (second revision)',
+		developer: 'Taito',
+		year: '1980',
+		Notes: '',
+
+		archive_name: 'polaris',
+		driver: Polaris,
+		mappings: [
+		{
+			name: 'MAP',
+			roms: ['ps08.1b'],
+		},
+		{
+			name: 'PRG1',
+			roms: ['ps01-1.30', 'ps02.36', 'ps03.31', 'ps04.37'],
+		},
+		{
+			name: 'PRG2',
+			roms: ['ps05.32', 'ps06.38', 'ps26'],
+		},
+		{
+			name: 'OBJ',
+			roms: ['ps07.2c'],
+		},
+		]
+	},
+	{
+		// Mame name  'polarisb'
+		display_name: 'Polaris (first revision)',
+		developer: 'Taito',
+		year: '1980',
+		Notes: '',
+
+		archive_name: 'polaris',
+		driver: Polaris,
+		mappings: [
+		{
+			name: 'MAP',
+			roms: ['ps08.1b'],
+		},
+		{
+			name: 'PRG1',
+			roms: ['ps01.30', 'ps02.36', 'ps03.31', 'ps04.37'],
+		},
+		{
+			name: 'PRG2',
+			roms: ['ps05.32', 'ps06.38'],
+		},
+		{
+			name: 'OBJ',
+			roms: ['ps07.2c'],
+		},
+		]
+	},
+	{
+		// Mame name  'polariso'
+		display_name: 'Polaris (original version)',
+		developer: 'Taito',
+		year: '1980',
+		Notes: 'TODO: Doesnt boot. (romsets likely wrong)',
+
+		archive_name: 'polaris',
+		driver: Polaris,
+		mappings: [
+		{
+			name: 'MAP',
+			roms: ['ps08.1b'],
+		},
+		{
+			name: 'PRG1',
+			roms: ['ps01-1.30', 'ps02.36', 'ps03.31' ],
+		},
+		{
+			name: 'PRG2',
+			roms: ['ps04.37','ps05.32', 'ps06.38'],
+		},
+		{
+			name: 'OBJ',
+			roms: ['ps07.2c'],
+		},
+		]
+	},
+	{
+		// Mame name  'polarisbr'
+		display_name: 'Polaris (Brazil)',
+		developer: 'Taito do Brasil',
+		year: '1981',
+		Notes: '',
+
+		archive_name: 'polaris',
+		driver: Polaris,
+		mappings: [
+		{
+			name: 'MAP',
+			roms: ['ps08.1b'],
+		},
+		{
+			name: 'PRG1',
+			roms: ['1', 'ps02.36', '3', 'ps04.37'],
+		},
+		{
+			name: 'PRG2',
+			roms: ['5', 'ps06.38', '7'],
+		},
+		{
+			name: 'OBJ',
+			roms: ['ps07.2c'],
+		},
+		]
+	},
+]
+
+
+let ROM_INDEX = RomSetInfo.length-1
+console.log("TOTAL ROMSETS AVALIBLE: "+RomSetInfo.length)
+console.log("GAME INDEX: "+(ROM_INDEX+1))
+
+let PRG1, PRG2, MAP, OBJ;
+window.addEventListener('load', () =>
+	RBL.Load_Rom(RomSetInfo[ROM_INDEX]).then((ROM) => {
+		
+		PRG1 = ROM["PRG1"].addBase();
+		PRG2 = ROM["PRG2"].addBase();
+		MAP  = ROM["MAP" ].addBase();
+		OBJ  = ROM["OBJ" ].addBase(); // unused in emulation
+		
+		
+		game  = new ROM.settings.driver();
+		sound = [];
+		
+		canvas.addEventListener('click', () => game.coin(true));
+		init({game, sound});
+		
+	})
+);
 

@@ -437,19 +437,3 @@ window.addEventListener('load', () =>
 	})
 );
 
-
-/*
-import {ROM} from "../roms/space_chaser.png.js";
-let PRG1, PRG2, MAP;
-
-window.addEventListener('load', () => expand(ROM).then(ROM => {
-	PRG1 = new Uint8Array(ROM.buffer, 0x0, 0x2000).addBase();
-	PRG2 = new Uint8Array(ROM.buffer, 0x2000, 0x800).addBase();
-	MAP = new Uint8Array(ROM.buffer, 0x2800, 0x400);
-	game = new SpaceChaser();
-	sound = [];
-	canvas.addEventListener('click', () => game.coin(true));
-	init({game, sound});
-}));
-
-*/
