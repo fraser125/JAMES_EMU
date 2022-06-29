@@ -2,11 +2,10 @@
  *
  *	Space Invaders
  *
- * TODO:
+ * TODO: (can be split into new drivers)
  *   ~ SV Version.
  *   ~ Space Invaders - Part 2.
  *   ~ Moon Base Zeta
- *   ~ 
  *   ~ 
  *   ~ 
  *   ~ 
@@ -347,6 +346,16 @@ class BootLeg_SpaceRanger extends SpaceInvaders_CV {
  *  TODO: ADD INPUTS
  */
 class Astropal extends SpaceInvaders_TV {
+	rotate = 1;
+}
+
+/*
+ *
+ *	Steel Worker
+ *  TODO: ADD INPUTS
+ */
+class SteelWorker extends SpaceInvaders_CV {
+	rotate = 1;
 }
 
  
@@ -421,6 +430,23 @@ const RomSetInfo = [
 		{
 			name: 'PRG',
 			roms: ['sv0h.36', 'sv11.35', 'sv12.34', 'sv04.31', 'sv13.42', 'sv14.41'],
+		},
+		]
+	},
+//// Bootlegs ////
+	{
+		// Mame name  'darthvdr'
+		display_name: 'Darth Vader (bootleg of Space Invaders)',
+		developer: 'bootleg',
+		year: '1978',
+		Notes: 'TODO: ERROR ON LOAD',
+
+		archive_name: 'invaders',
+		driver: SpaceInvaders_TV,
+		mappings: [
+		{
+			name: 'PRG',
+			roms: ['rom0', 'rom1', 'rom2', 'rom3', 'rom4', 'rom5'],
 		},
 		]
 	},
@@ -735,7 +761,28 @@ const RomSetInfo = [
 		},
 		]
 	},
+	{
+		// Mame name  'steelwkr'
+		display_name: 'Steel Worker',
+		developer: 'Taito',
+		year: '1980',
+		Notes: 'TODO: Needs inputs',
 
+		archive_name: 'steelwkr',
+		driver: SteelWorker,
+		mappings: [
+		{
+			name: 'MAP',
+			roms: ['la05.1', 'la06.2'],
+		},
+		{
+			name: 'PRG',
+			roms: ['1.36', '2.35', '3.34', '4.33', '5.32', '6.31', '7.42', '8.41'],
+		},
+		]
+	},
+
+	
 ]
 
 

@@ -39,6 +39,7 @@ export default class Cpu {
 	}
 
 	reset() {
+		console.log("CPU RESET")
 		this.fActive = true;
 		this.fSuspend = false;
 		this.frac = 0;
