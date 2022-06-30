@@ -3560,8 +3560,6 @@ const RomSetInfo = [
 	
 	//// NON- Warp & Warp Games
 	
-	
-	
 	/*
 	{
 		// Mame name  'cutieq'
@@ -3747,7 +3745,7 @@ const RomSetInfo = [
 	},/**/
 ]
 
-let ROM_INDEX = RomSetInfo.length-1
+let ROM_INDEX = 0//RomSetInfo.length-1
 console.log("TOTAL ROMSETS AVALIBLE: "+RomSetInfo.length)
 console.log("GAME INDEX: "+(ROM_INDEX+1))
 

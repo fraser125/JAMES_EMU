@@ -8,8 +8,10 @@ import AY_3_8910 from '../libs/EMU.js/devices/SOUND/ay-3-8910.js';
 import SoundEffect from '../libs/EMU.js/devices/SOUND/sound_effect.js';
 import {seq, rseq, convertGFX, Timer} from '../libs/EMU.js/utils.js';
 import {init} from '../libs/EMU.js/main.js';
+import RomBootLoader from '../libs/RomBootLoader/RomBootLoader.js';
 import Z80 from '../libs/EMU.js/devices/CPU/z80.js';
-let game, sound;
+let game;
+let sound = [];
 
 class JumpBug {
 	cxScreen = 224;
@@ -448,6 +450,16 @@ class JumpBug {
 				if ((px = this.obj[--src]))
 					data[dst] = idx | px;
 	}
+}
+
+/*
+ *
+ *	Levers (TODO or split into new driver)
+ *
+ */
+ 
+class Levers extends JumpBug {
+	// TODO!
 }
 
 /*
@@ -1574,19 +1586,134 @@ AP8A/wD/AP8A/wD/AP8A/wD/\
  *
  */
 
-import {ROM} from "../roms/jump_bug.png.js";
-let PRG, BG, RGB;
+const RBL = new RomBootLoader();
 
-window.addEventListener('load', () => expand(ROM).then(ROM => {
-	PRG = new Uint8Array(ROM.buffer, 0x0, 0x6800).addBase();
-	BG = new Uint8Array(ROM.buffer, 0x6800, 0x3000);
-	RGB = new Uint8Array(ROM.buffer, 0x9800, 0x20);
-	game = new JumpBug();
-	sound = [
-		new AY_3_8910({clock: Math.floor(18432000 / 12)}),
-		new SoundEffect({se: game.se, gain: 0.3}),
-	];
-	canvas.addEventListener('click', () => game.coin(true));
-	init({game, sound});
-}));
+const RomSetInfo = [
+	{
+		// Mame name  'jumpbug'
+		display_name: 'Jump Bug',
+		developer: 'bootleg',
+		year: '1981',
+		Notes: 'TODO: Broken Text Graphics (bad rom?)',
+
+		driver: JumpBug,
+		romsets: [{
+			archive_name: 'jumpbug',
+			mappings: [
+			{
+				name: 'RGB',
+				roms: ['l06_prom.bin'],
+			},
+			{
+				name: 'PRG',
+				roms: ['jb1', 'jb2', 'jb3', 'jb4', 'jb5', 'jb6', 'jb7'],
+			},
+			{
+				name: 'BG',
+				roms: ['jbl','jbm','jbn','jbi','jbj','jbk'],
+			},
+			]
+		}]
+	},
+	{
+		// Mame name  'jumpbugb'
+		display_name: 'Jump Bug (bootleg)',
+		developer: 'bootleg',
+		year: '1981',
+		Notes: 'TODO: Broken Text Graphics (bad rom?)',
+
+		driver: JumpBug,
+		romsets: [{
+			archive_name: 'jumpbug',
+			mappings: [
+			{
+				name: 'RGB',
+				roms: ['l06_prom.bin'],
+			},
+			{
+				name: 'PRG',
+				roms: ['jb1', 'jb2', 'jb3b', 'jb4', 'jb5b', 'jb6b', 'jb7b'],
+			},
+			{
+				name: 'BG',
+				roms: ['jbl','jbm','jbn','jbi','jbj','jbk'],
+			},
+			]
+		}]
+	},/*
+	{
+		// Mame name  'olibug'
+		display_name: 'Oli Bug (Jump Bug bootleg)',
+		developer: 'bootleg',
+		year: '1982',
+		Notes: 'TODO: Where are the roms for this....?',
+
+		driver: JumpBug,
+		romsets: [{
+			archive_name: 'jumpbug',
+			mappings: [
+			{
+				name: 'RGB',
+				roms: ['l06_prom.bin'],
+			},
+			{
+				name: 'PRG',
+				roms: ['b1.bin', 'b2.bin', 'b3.bin', 'b4.bin', 'b5.bin', 'b6.bin', 'b7.bin'],
+			},
+			{
+				name: 'BG',
+				roms: ['b10.bin','b9.bin',null,'b11.bin','b8.bin',null],
+			},
+			]
+		}]
+	},*/
+	{
+		// Mame name  'levers'
+		display_name: 'Levers',
+		developer: 'Rock-Ola',
+		year: '1983',
+		Notes: 'TODO: Make this work',
+
+		driver: Levers,
+		romsets: [{
+			archive_name: 'levers',
+			mappings: [
+			{
+				name: 'RGB',
+				roms: ['g960lev.clr'],
+			},
+			{
+				name: 'PRG',
+				roms: ['g96059.a8','g96060.d8','g96061.e8','g96062.h8','g96063.j8','g96064.l8'],
+			},
+			{
+				name: 'BG',
+				roms: ['g95948.n1',/**/'g95948.n1',/**/ 'g95949.s1','g95946.j1',/**/'g95948.n1',/**/'g95947.m1'],
+			},
+			]
+		}]
+	},
+]
+
+let ROM_INDEX = RomSetInfo.length-1
+console.log("TOTAL ROMSETS AVALIBLE: "+RomSetInfo.length)
+console.log("GAME INDEX: "+ROM_INDEX)
+
+let BG, RGB, PRG;
+window.addEventListener('load', () =>
+	RBL.Load_Rom(RomSetInfo[ROM_INDEX]).then((ROM) => {
+		
+		PRG   = ROM["PRG"].addBase();
+		BG    = ROM["BG" ];
+		RGB   = ROM["RGB"];
+		
+		sound.push( new AY_3_8910({clock: Math.floor(18432000 / 12)}) )
+		game    =   new ROM.settings.driver();
+		sound.push( new SoundEffect({se: game.se, gain: 0.5}) )
+		
+		canvas.addEventListener('click', () => game.coin(true));
+		init({game, sound});
+		
+	})
+);
 
