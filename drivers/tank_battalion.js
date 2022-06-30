@@ -7,6 +7,7 @@
 import SoundEffect from '../libs/EMU.js/devices/SOUND/sound_effect.js';
 import {seq, rseq, convertGFX} from '../libs/EMU.js/utils.js';
 import {init} from '../libs/EMU.js/main.js';
+import RomBootLoader from '../libs/RomBootLoader/RomBootLoader.js';
 import MCS6502 from '../libs/EMU.js/devices/CPU/mcs6502.js';
 let game, sound;
 
@@ -3297,16 +3298,78 @@ MP8=\
  *
  */
 
-import {ROM} from "../roms/tank_battalion.png.js";
-let PRG, BG, RGB;
+const RBL = new RomBootLoader();
+const RomSetInfo = [
+	{
+		// Mame name  'tankbatt'
+		display_name: 'Tank Battalion',
+		developer: 'Namco',
+		year: '1980',
+		Notes: '',
 
-window.addEventListener('load', () => expand(ROM).then(ROM => {
-	PRG = new Uint8Array(ROM.buffer, 0x0, 0x2000).addBase();
-	BG = new Uint8Array(ROM.buffer, 0x2000, 0x800);
-	RGB = new Uint8Array(ROM.buffer, 0x2800, 0x100);
-	game = new TankBattalion();
-	sound = new SoundEffect({se: game.se, gain: 0.5});
-	canvas.addEventListener('click', () => game.coin(true));
-	init({game, sound});
-}));
+		archive_name: 'tankbatt',
+		driver: TankBattalion,
+		mappings: [
+		{
+			name: 'PRG',
+			roms: ['tb1-1.1a','tb1-2.1b','tb1-3.1c','tb1-4.1d'],
+		},
+		{
+			name: 'BG',
+			roms: ['tb1-5.2k'],
+		},
+		{
+			name: 'RGB',
+			roms: ['bct1-1.l3'],
+		},
+		]
+	},
+	{
+		// Mame name  'tankbattb'
+		display_name: 'Tank Battalion (bootleg)',
+		developer: 'bootleg',
+		year: '1980',
+		Notes: 'romset with "NAMCO" removed from gfx1 rom, otherwise identical to original.',
+
+		archive_name: 'tankbatt',
+		driver: TankBattalion,
+		mappings: [
+		{
+			name: 'PRG',
+			roms: ['tb1-1.1a','tb1-2.1b','tb1-3.1c','tb1-4.1d'],
+		},
+		{
+			name: 'BG',
+			roms: ['e.2k'],
+		},
+		{
+			name: 'RGB',
+			roms: ['bct1-1.l3'],
+		},
+		]
+	},
+]
+
+
+
+let ROM_INDEX = 0
+console.log("TOTAL ROMSETS AVALIBLE: "+RomSetInfo.length)
+console.log("GAME INDEX: "+(ROM_INDEX+1))
+
+let PRG, BG, RGB;
+window.addEventListener('load', () =>
+	RBL.Load_Rom(RomSetInfo[ROM_INDEX]).then((ROM) => {
+		
+		PRG = ROM["PRG"].addBase();
+		BG  = ROM["BG"];
+		RGB = ROM["RGB"];
+		
+		game    =   new ROM.settings.driver();
+		sound = new SoundEffect({se: game.se, gain: 0.5});
+		canvas.addEventListener('click', () => game.coin(true));
+		init({game, sound});
+		
+	})
+);
+
 
