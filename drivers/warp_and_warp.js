@@ -5,8 +5,10 @@
  */
 
 import SoundEffect from '../libs/EMU.js/devices/SOUND/sound_effect.js';
+import WarpAndWarpSound from '../libs/EMU.js/devices/SOUND/WarpAndWarp_Sound.js';
 import {seq, rseq, convertGFX, Timer} from '../libs/EMU.js/utils.js';
 import {init} from '../libs/EMU.js/main.js';
+import RomBootLoader from '../libs/RomBootLoader/RomBootLoader.js';
 import I8080 from '../libs/EMU.js/devices/CPU/i8080.js';
 let game, sound;
 
@@ -305,41 +307,6 @@ class WarpAndWarp {
 	}
 }
 
-/*
- *
- *	Warp & Warp Sound Module
- *
- */
-
-class WarpAndWarpSound {
-	rate;
-	gain;
-	output = 0;
-	reg1 = 0;
-	reg2 = 0;
-	voice = 0;
-	freq = 0;
-	phase = 0;
-
-	constructor({gain = 0.1} = {}) {
-		this.rate = Math.floor(0x8000000 * (48000 / audioCtx.sampleRate));
-		this.gain = gain;
-	}
-
-	set_freq(data) {
-		this.reg1 = data, this.freq = this.rate / (0x40 - (data & 0x3f)) | 0;
-	}
-
-	set_voice(data) {
-		this.reg2 = data, this.voice = data >> 1 & 7;
-	}
-
-	update() {
-		if ((this.reg2 & 0xf) !== 0xf && this.reg1 & 0x3f && this.reg2 !== 0x2d)
-			this.phase = (this.phase + this.freq) % (8 - this.voice << 28);
-		this.output = (this.phase >> 23 < 16 ? 1 : -1) * this.gain;
-	};
-}
 
 /*
  *
@@ -3511,12 +3478,102 @@ CAABAP7/AwD7//r/9//3//n/8P/5//D/8P/5//3/8v/z/+//+P/8//H/+v/z//b/9P/4//L/+P/1//P/
 4//a/9v/3//Y/9T/1//k/9P/0f/f/+D/1//c/97/1v/h/w==\
 ').split('').map(c => c.charCodeAt(0))).buffer);
 
+
 /*
  *
  *	Warp & Warp
  *
  */
 
+const RBL = new RomBootLoader();
+const RomSetInfo = [
+	
+	{
+		// Mame name  'warpwarp'
+		display_name: 'Warp & Warp',
+		developer: 'Namco',
+		year: '1981',
+		Notes: '~AUTO PORTED PLEASE TEST~',
+
+		archive_name: 'warpwarp',
+		driver: WarpAndWarp,
+		mappings: [
+		{
+			name: 'PRG',
+			roms: ['ww1_prg1.s10', 'ww1_prg2.s8', 'ww1_prg3.s4'],
+		},
+		{
+			name: 'BG',
+			roms: ['ww1_chg1.s12'],
+		},
+		]
+	},
+	{
+		// Mame name  'warpwarpr'
+		display_name: 'Warp Warp (Rock-Ola set 1)',
+		developer: 'Namco (Rock-Ola license)',
+		year: '1981',
+		Notes: '~AUTO PORTED PLEASE TEST~',
+
+		archive_name: 'warpwarp',
+		driver: WarpAndWarp,
+		mappings: [
+		{
+			name: 'PRG',
+			roms: ['g-09601.2r', 'g-09602.2m', 'g-09603.1p', 'g-09613.1t'],
+		},
+		{
+			name: 'BG',
+			roms: ['g-9611.4c'],
+		},
+		]
+	},
+	{
+		// Mame name  'warpwarpr2'
+		display_name: 'Warp Warp (Rock-Ola set 2)',
+		developer: 'Namco (Rock-Ola license)',
+		year: '1981',
+		Notes: '~AUTO PORTED PLEASE TEST~',
+
+		archive_name: 'warpwarp',
+		driver: WarpAndWarp,
+		mappings: [
+		{
+			name: 'PRG',
+			roms: ['g-09601.2r', 'g-09602.2m', 'g-09603.1p', 'g-09612.1t'],
+		},
+		{
+			name: 'BG',
+			roms: ['g-9611.4c'],
+		},
+		]
+	},
+]
+
+let ROM_INDEX = 0
+console.log("TOTAL ROMSETS AVALIBLE: "+RomSetInfo.length)
+console.log("GAME INDEX: "+(ROM_INDEX+1))
+
+let PRG, BG;
+window.addEventListener('load', () =>
+	RBL.Load_Rom(RomSetInfo[ROM_INDEX]).then((ROM) => {
+		
+		PRG = ROM["PRG"].addBase();
+		BG  = ROM["BG" ].addBase();
+		
+		game    =   new ROM.settings.driver();
+		sound = [
+			new WarpAndWarpSound(),
+			new SoundEffect({se: game.se, gain:0.5}),
+		];
+		canvas.addEventListener('click', () => game.coin(true));
+		init({game, sound});
+		
+	})
+);
+
+
+/*
 import {ROM} from "../roms/warp_and_warp.png.js";
 let PRG, BG;
 
@@ -3531,4 +3588,4 @@ window.addEventListener('load', () => expand(ROM).then(ROM => {
 	canvas.addEventListener('click', () => game.coin(true));
 	init({game, sound});
 }));
-
+*/
