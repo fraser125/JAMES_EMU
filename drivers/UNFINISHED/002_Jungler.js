@@ -1,6 +1,6 @@
 /*
  *
- *	Rally-X / New Rally-X
+ *	Jungler
  *
  */
 
@@ -12,7 +12,7 @@ import RomBootLoader from '../libs/RomBootLoader/RomBootLoader.js';
 import Z80 from '../libs/EMU.js/devices/CPU/z80.js';
 let game, sound;
 
-class RallyX {
+class Jungler {
 	cxScreen = 224;
 	cyScreen = 285;
 	width = 256;
@@ -671,17 +671,7 @@ class RallyX {
 
 /*
  *
- *	New Rally-X
- *
- * Mame says there are hardware changes but it runs just fine on the first games hardware?
- */
-
-class NewRallyX extends RallyX {}
-
-
-/*
- *
- *	Rally-X
+ *	Jungler
  *
  */
 
@@ -1212,257 +1202,191 @@ z//f//3/9f///w==\
 const RBL = new RomBootLoader();
 
 const RomSetInfo = [
-	/*
-	 *
-	 *	Rally-X
-	 *
-	 */
 	{
-		// Mame name  'rallyx'
-		display_name: 'Rally X (32k Ver.?)',
-		developer: 'Namco',
-		year: '1980',
-		Notes: '~AUTO PORTED PLEASE TEST~',
-
-		archive_name: 'rallyx',
-		driver: RallyX,
-		mappings: [
-		// unused: 'rx1-2.4n', 'rx1-3.7k', 'rx1-6.8m', 'rx1-6.8m'
-		{
-			name: 'RGB',
-			roms: ['rx1-1.11n'],
-		},
-		{
-			name: 'COLOR',
-			roms: ['rx1-7.8p'],
-		},
-		{
-			name: 'PRG',
-			roms: ['1b', 'rallyxn.1e', 'rallyxn.1h', 'rallyxn.1k'],
-		},
-		{
-			name: 'BGOBJ',
-			roms: ['8e'],
-		},
-		{
-			name: 'SND',
-			roms: ['rx1-5.3p', 'rx1-4.2m'],
-		},
-		]
-	},
-	{
-		// Mame name  'rallyxa'
-		display_name: 'Rally X',
-		developer: 'Namco',
-		year: '1980',
-		Notes: '~AUTO PORTED PLEASE TEST~',
-
-		archive_name: 'rallyx',
-		driver: RallyX,
-		mappings: [
-		// unused: 'rx1-2.4n', 'rx1-3.7k', 'rx1-6.8m'
-		{
-			name: 'RGB',
-			roms: ['rx1-1.11n'],
-		},
-		{
-			name: 'COLOR',
-			roms: ['rx1-7.8p'],
-		},
-		{
-			name: 'PRG',
-			roms: ['rx1_prg_1.1b', 'rx1_prg_2.1c', 'rx1_prg_3.1d', 'rx1_prg_4.1e', 'rx1_prg_5.bin', 'rx1_prg_6.bin', 'rx1_prg_7.1k', 'rx1_prg_8.1l'],
-		},
-		{
-			name: 'BGOBJ',
-			roms: ['rx1_chg_1.8e', 'rx1_chg_2.8d'],
-		},
-		{
-			name: 'SND',
-			roms: ['rx1-5.3p', 'rx1-4.2m'],
-		},
-		]
-	},
-	{
-		// Mame name  'rallyxm'
-		display_name: 'Rally X (Midway)',
-		developer: 'Namco (Midway license)',
-		year: '1980',
-		Notes: '~AUTO PORTED PLEASE TEST~',
-
-		archive_name: 'rallyx',
-		driver: RallyX,
-		mappings: [
-		// unused: 'rx1-2.4n', 'rx1-3.7k', 'rx1-6.8m'
-		{
-			name: 'RGB',
-			roms: ['rx1-1.11n'],
-		},
-		{
-			name: 'COLOR',
-			roms: ['rx1-7.8p'],
-		},
-		{
-			name: 'PRG',
-			roms: ['1b', '1e', '1h', '1k'],
-		},
-		{
-			name: 'BGOBJ',
-			roms: ['8e'],
-		},
-		{
-			name: 'SND',
-			roms: ['rx1-5.3p', 'rx1-4.2m'],
-		},
-		]
-	},
-	{
-		// Mame name  'rallyxmr'
-		display_name: 'Rally X (Model Racing bootleg)',
-		developer: 'bootleg (Model Racing)',
-		year: '1980',
-		Notes: '~AUTO PORTED PLEASE TEST~',
-
-		archive_name: 'rallyx',
-		driver: RallyX,
-		mappings: [
-		// unused: 'rx1-2.4n', 'rx1-3.7k', 'rx1-6.8m'
-		{
-			name: 'RGB',
-			roms: ['rx1-1.11n'],
-		},
-		{
-			name: 'COLOR',
-			roms: ['rx1-7.8p'],
-		},
-		{
-			name: 'PRG',
-			roms: ['166.bin', '167.bin', '168.bin', '169.bin', '170.bin', '171.bin', '172.bin', '173.bin'],
-		},
-		{
-			name: 'BGOBJ',
-			roms: ['175.bin', '174.bin'],
-		},
-		{
-			name: 'SND',
-			roms: ['rx1-5.3p', 'rx1-4.2m'],
-		},
-		]
-	},
-	{
-		// Mame name  'dngrtrck'
-		display_name: 'Danger Track (Rally X bootleg)',
-		developer: 'bootleg (Petaco)',
-		year: '1980',
-		Notes: '~AUTO PORTED PLEASE TEST~',
-
-		archive_name: 'rallyx',
-		driver: RallyX,
-		mappings: [
-		// unused: 'rx1-2.4n', 'rx1-3.7k', 'rx1-6.8m'
-		{
-			name: 'RGB',
-			roms: ['rx1-1.11n'],
-		},
-		{
-			name: 'COLOR',
-			roms: ['rx1-7.8p'],
-		},
-		{
-			name: 'PRG',
-			roms: ['1b-2716.bin', '1c-2716.bin', '1d-2716.bin', '1e-2716.bin', '1h-2716.bin', '1j-2716.bin', '1k-2716.bin', '1l-2716.bin'],
-		},
-		{
-			name: 'BGOBJ',
-			roms: ['8e-2716.bin', '8d-2716.bin'],
-		},
-		{
-			name: 'SND',
-			roms: ['rx1-5.3p', 'rx1-4.2m'],
-		},
-		]
-	},
-	
-	
-	
-	
-	/*
-	 *
-	 *	New Rally-X
-	 *
-	 */
-	{
-		// Mame name  'nrallyx'
-		display_name: 'New Rally X',
-		developer: 'Namco',
-		year: '1981',
-		Notes: 'TODO: refuses to boot up correctly ROM CHECK FLASHES',
-
-		archive_name: 'nrallyx',
-		driver: NewRallyX,
-		mappings: [
-		// unused: 'nrx1-2.4n', 'nrx1-3.7k'
-		{
-			name: 'RGB',
-			roms: ['nrx1-1.11n'],
-		},
-		{
-			name: 'COLOR',
-			roms: ['nrx1-7.8p'],
-		},
-		{
-			name: 'PRG',
-			roms: ['nrx_prg1.1d', 'nrx_prg2.1e', 'nrx_prg3.1k', 'nrx_prg4.1l'],
-		},
-		{
-			name: 'BGOBJ',
-			roms: ['nrx_chg1.8e', 'nrx_chg2.8d'],
-		},
-		{
-			name: 'SND',
-			roms: ['rx1-5.3p', 'rx1-4.2m'],
-		},
-		]
-	},
-	{
-		// Mame name  'nrallyxb'
-		display_name: 'New Rally X (bootleg?)',
-		developer: 'Namco',
+		// Mame name  'jungler'
+		display_name: 'Jungler',
+		developer: 'Konami',
 		year: '1981',
 		Notes: '~AUTO PORTED PLEASE TEST~',
 
-		archive_name: 'nrallyx',
-		driver: NewRallyX,
-		mappings: [
-		// unused: 'nrx1-2.4n', 'nrx1-3.7k'
+		archive_name: 'jungler',
+		driver: Jungler,
+		mappings: [ // unused: '18s030.7a', '6331-1.10a'
 		{
 			name: 'RGB',
-			roms: ['nrx1-1.11n'],
+			roms: ['18s030.8b'],
 		},
 		{
 			name: 'COLOR',
-			roms: ['nrx1-7.8p'],
-		},
-		{
-			name: 'PRG',
-			roms: ['nrallyx.1b', 'nrallyx.1e', 'nrallyx.1h', 'nrallyx.1k'],
-		},
-		{
-			name: 'BGOBJ',
-			roms: ['nrallyx.8e'],
+			roms: ['tbp24s10.9d'],
 		},
 		{
 			name: 'SND',
-			roms: ['rx1-5.3p', 'rx1-4.2m'],
+			roms: ['1b'],
+		},
+		{
+			name: 'PRG',
+			roms: ['jungr1', 'jungr2', 'jungr3', 'jungr4'],
+		},
+		{
+			name: 'OBJ',
+			roms: ['82s129.10g'],
+		},
+		{
+			name: 'BGOBJ',
+			roms: ['5k', '5m'],
 		},
 		]
 	},
+	{
+		// Mame name  'junglers'
+		display_name: 'Jungler (Stern Electronics)',
+		developer: 'Konami (Stern Electronics license)',
+		year: '1981',
+		Notes: '~AUTO PORTED PLEASE TEST~',
 
+		archive_name: 'jungler',
+		driver: Jungler,
+		mappings: [ // unused: '18s030.7a', '6331-1.10a'
+		{
+			name: 'RGB',
+			roms: ['18s030.8b'],
+		},
+		{
+			name: 'COLOR',
+			roms: ['tbp24s10.9d'],
+		},
+		{
+			name: 'SND',
+			roms: ['1b'],
+		},
+		{
+			name: 'PRG',
+			roms: ['5c', '5a', '4d', '4c'],
+		},
+		{
+			name: 'OBJ',
+			roms: ['82s129.10g'],
+		},
+		{
+			name: 'BGOBJ',
+			roms: ['5k', '5m'],
+		},
+		]
+	},
+	{
+		// Mame name  'junglero'
+		display_name: 'Jungler (Olympia)',
+		developer: 'Konami (Olympia license)',
+		year: '1981',
+		Notes: '~AUTO PORTED PLEASE TEST~',
 
+		archive_name: 'jungler',
+		driver: Jungler,
+		mappings: [ // unused: '18s030.7a', '6331-1.10a'
+		{
+			name: 'RGB',
+			roms: ['18s030.8b'],
+		},
+		{
+			name: 'COLOR',
+			roms: ['tbp24s10.9d'],
+		},
+		{
+			name: 'SND',
+			roms: ['js1.bin'],
+		},
+		{
+			name: 'PRG',
+			roms: ['j1.bin', 'j2.bin', 'j3.bin', 'j4.bin'],
+		},
+		{
+			name: 'OBJ',
+			roms: ['am27s21dc.jn4'],
+		},
+		{
+			name: 'BGOBJ',
+			roms: ['j5.bin', 'j6.bin'],
+		},
+		]
+	},
+	{
+		// Mame name  'jackler'
+		display_name: 'Jackler (Jungler bootleg)',
+		developer: 'bootleg',
+		year: '1982',
+		Notes: '~AUTO PORTED PLEASE TEST~',
+
+		archive_name: 'jungler',
+		driver: Jungler,
+		mappings: [ // unused: '18s030.7a', '6331-1.10a'
+		{
+			name: 'RGB',
+			roms: ['18s030.8b'],
+		},
+		{
+			name: 'COLOR',
+			roms: ['tbp24s10.9d'],
+		},
+		{
+			name: 'SND',
+			roms: ['1b'],
+		},
+		{
+			name: 'PRG',
+			roms: ['jackler_j1.r1', 'jackler_j2.r2', 'jungr3', 'jungr4'],
+		},
+		{
+			name: 'OBJ',
+			roms: ['82s129.10g'],
+		},
+		{
+			name: 'BGOBJ',
+			roms: ['jackler_j5.r9', 'jackler_j6.r10'],
+		},
+		]
+	},
+	
+	{
+		// Mame name  'savanna'
+		display_name: 'Savanna (Jungler bootleg)',
+		developer: 'bootleg (Olympia)',
+		year: '1982',
+		Notes: '~AUTO PORTED PLEASE TEST~',
+
+		archive_name: 'jungler',
+		driver: Jungler,
+		mappings: [ // unused: '18s030.7a', '6331-1.10a'
+		{
+			name: 'RGB',
+			roms: ['18s030.8b'],
+		},
+		{
+			name: 'COLOR',
+			roms: ['tbp24s10.9d'],
+		},
+		{
+			name: 'SND',
+			roms: ['1b'],
+		},
+		{
+			name: 'PRG',
+			roms: ['sav1.bin', 'sav2.bin', 'sav3.bin', 'sav4.bin'],
+		},
+		{
+			name: 'OBJ',
+			roms: ['82s129.10g'],
+		},
+		{
+			name: 'BGOBJ',
+			roms: ['5k', '5m'],
+		},
+		]
+	},
 ]
 
 
-let ROM_INDEX = 0//RomSetInfo.length-1
+let ROM_INDEX = 7//RomSetInfo.length-1
 console.log("TOTAL ROMSETS AVALIBLE: "+RomSetInfo.length)
 console.log("GAME INDEX: "+(ROM_INDEX+1))
 
@@ -1486,24 +1410,3 @@ window.addEventListener('load', () =>
 	})
 );
 
-
- 
-/*
-import {ROM} from "../roms/rally-x.png.js";
-let PRG, BGOBJ, RGB, COLOR, SND;
-
-window.addEventListener('load', () => expand(ROM).then(ROM => {
-	PRG = new Uint8Array(ROM.buffer, 0x0, 0x4000).addBase();
-	BGOBJ = new Uint8Array(ROM.buffer, 0x4000, 0x1000);
-	RGB = new Uint8Array(ROM.buffer, 0x5000, 0x20);
-	COLOR = new Uint8Array(ROM.buffer, 0x5020, 0x100);
-	SND = new Uint8Array(ROM.buffer, 0x5120, 0x100);
-	game = new RallyX();
-	sound = [
-		new PacManSound({SND}),
-		new SoundEffect({se: game.se, gain: 9 / 16}),
-	];
-	canvas.addEventListener('click', () => game.coin(true));
-	init({game, sound});
-}));
-*/
