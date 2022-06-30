@@ -8,6 +8,7 @@ import PacManSound from '../libs/EMU.js/devices/SOUND/pac-man_sound.js';
 import SoundEffect from '../libs/EMU.js/devices/SOUND/sound_effect.js';
 import {seq, rseq, convertGFX, Timer} from '../libs/EMU.js/utils.js';
 import {init} from '../libs/EMU.js/main.js';
+import RomBootLoader from '../libs/RomBootLoader/RomBootLoader.js';
 import Z80 from '../libs/EMU.js/devices/CPU/z80.js';
 let game, sound;
 
@@ -18,7 +19,7 @@ class RallyX {
 	height = 512;
 	xOffset = 16;
 	yOffset = 19;
-	rotate = 3;
+	rotate = 0;
 
 	fReset = false;
 	fTest = false;
@@ -1200,7 +1201,227 @@ z//f//3/9f///w==\
  *	Rally-X
  *
  */
+ 
 
+const RBL = new RomBootLoader();
+
+const RomSetInfo = [
+	{
+		// Mame name  'rallyx'
+		display_name: 'Rally X (32k Ver.?)',
+		developer: 'Namco',
+		year: '1980',
+		Notes: '~AUTO PORTED PLEASE TEST~',
+
+		archive_name: 'rallyx',
+		driver: RallyX,
+		mappings: [
+		// unused: 'rx1-2.4n', 'rx1-3.7k'
+		{
+			name: 'RGB',
+			roms: ['rx1-1.11n'],
+		},
+		{
+			name: 'COLOR',
+			roms: ['rx1-7.8p'],
+		},
+		{
+			name: 'PRG',
+			roms: ['1b', 'rallyxn.1e', 'rallyxn.1h', 'rallyxn.1k'],
+		},
+		{
+			name: 'OBJ',
+			roms: ['rx1-6.8m'],
+		},
+		{
+			name: 'BGOBJ',
+			roms: ['8e'],
+		},
+		{
+			name: 'SND',
+			roms: ['rx1-5.3p', 'rx1-4.2m'],
+		},
+		]
+	},
+	{
+		// Mame name  'rallyxa'
+		display_name: 'Rally X',
+		developer: 'Namco',
+		year: '1980',
+		Notes: '~AUTO PORTED PLEASE TEST~',
+
+		archive_name: 'rallyx',
+		driver: RallyX,
+		mappings: [
+		// unused: 'rx1-2.4n', 'rx1-3.7k'
+		{
+			name: 'RGB',
+			roms: ['rx1-1.11n'],
+		},
+		{
+			name: 'COLOR',
+			roms: ['rx1-7.8p'],
+		},
+		{
+			name: 'PRG',
+			roms: ['rx1_prg_1.1b', 'rx1_prg_2.1c', 'rx1_prg_3.1d', 'rx1_prg_4.1e', 'rx1_prg_5.bin', 'rx1_prg_6.bin', 'rx1_prg_7.1k', 'rx1_prg_8.1l'],
+		},
+		{
+			name: 'OBJ',
+			roms: ['rx1-6.8m'],
+		},
+		{
+			name: 'BGOBJ',
+			roms: ['rx1_chg_1.8e', 'rx1_chg_2.8d'],
+		},
+		{
+			name: 'SND',
+			roms: ['rx1-5.3p', 'rx1-4.2m'],
+		},
+		]
+	},
+	{
+		// Mame name  'rallyxm'
+		display_name: 'Rally X (Midway)',
+		developer: 'Namco (Midway license)',
+		year: '1980',
+		Notes: '~AUTO PORTED PLEASE TEST~',
+
+		archive_name: 'rallyx',
+		driver: RallyX,
+		mappings: [
+		// unused: 'rx1-2.4n', 'rx1-3.7k'
+		{
+			name: 'RGB',
+			roms: ['rx1-1.11n'],
+		},
+		{
+			name: 'COLOR',
+			roms: ['rx1-7.8p'],
+		},
+		{
+			name: 'PRG',
+			roms: ['1b', '1e', '1h', '1k'],
+		},
+		{
+			name: 'OBJ',
+			roms: ['rx1-6.8m'],
+		},
+		{
+			name: 'BGOBJ',
+			roms: ['8e'],
+		},
+		{
+			name: 'SND',
+			roms: ['rx1-5.3p', 'rx1-4.2m'],
+		},
+		]
+	},
+	{
+		// Mame name  'rallyxmr'
+		display_name: 'Rally X (Model Racing bootleg)',
+		developer: 'bootleg (Model Racing)',
+		year: '1980',
+		Notes: '~AUTO PORTED PLEASE TEST~',
+
+		archive_name: 'rallyx',
+		driver: RallyX,
+		mappings: [
+		// unused: 'rx1-2.4n', 'rx1-3.7k'
+		{
+			name: 'RGB',
+			roms: ['rx1-1.11n'],
+		},
+		{
+			name: 'COLOR',
+			roms: ['rx1-7.8p'],
+		},
+		{
+			name: 'PRG',
+			roms: ['166.bin', '167.bin', '168.bin', '169.bin', '170.bin', '171.bin', '172.bin', '173.bin'],
+		},
+		{
+			name: 'OBJ',
+			roms: ['rx1-6.8m'],
+		},
+		{
+			name: 'BGOBJ',
+			roms: ['175.bin', '174.bin'],
+		},
+		{
+			name: 'SND',
+			roms: ['rx1-5.3p', 'rx1-4.2m'],
+		},
+		]
+	},
+	{
+		// Mame name  'dngrtrck'
+		display_name: 'Danger Track (Rally X bootleg)',
+		developer: 'bootleg (Petaco)',
+		year: '1980',
+		Notes: '~AUTO PORTED PLEASE TEST~',
+
+		archive_name: 'rallyx',
+		driver: RallyX,
+		mappings: [
+		// unused: 'rx1-2.4n', 'rx1-3.7k'
+		{
+			name: 'RGB',
+			roms: ['rx1-1.11n'],
+		},
+		{
+			name: 'COLOR',
+			roms: ['rx1-7.8p'],
+		},
+		{
+			name: 'PRG',
+			roms: ['1b-2716.bin', '1c-2716.bin', '1d-2716.bin', '1e-2716.bin', '1h-2716.bin', '1j-2716.bin', '1k-2716.bin', '1l-2716.bin'],
+		},
+		{
+			name: 'OBJ',
+			roms: ['rx1-6.8m'],
+		},
+		{
+			name: 'BGOBJ',
+			roms: ['8e-2716.bin', '8d-2716.bin'],
+		},
+		{
+			name: 'SND',
+			roms: ['rx1-5.3p', 'rx1-4.2m'],
+		},
+		]
+	},
+
+]
+
+
+let ROM_INDEX = 1//RomSetInfo.length-1
+console.log("TOTAL ROMSETS AVALIBLE: "+RomSetInfo.length)
+console.log("GAME INDEX: "+(ROM_INDEX+1))
+
+let PRG, BGOBJ, RGB, COLOR, SND;
+window.addEventListener('load', () =>
+	RBL.Load_Rom(RomSetInfo[ROM_INDEX]).then((ROM) => {
+		
+		PRG    = ROM["PRG"  ].addBase();
+		BGOBJ  = ROM["BGOBJ"].addBase();
+		RGB    = ROM["RGB"  ].addBase();
+		COLOR  = ROM["COLOR"].addBase();
+		SND    = ROM["SND"  ].addBase();
+		
+		sound = [new PacManSound({SND})];
+		game  = new ROM.settings.driver();
+		sound.push( new SoundEffect({se: game.se, gain: 9 / 16}) )
+		
+		canvas.addEventListener('click', () => game.coin(true));
+		init({game, sound});
+		
+	})
+);
+
+
+ 
+/*
 import {ROM} from "../roms/rally-x.png.js";
 let PRG, BGOBJ, RGB, COLOR, SND;
 
@@ -1218,4 +1439,4 @@ window.addEventListener('load', () => expand(ROM).then(ROM => {
 	canvas.addEventListener('click', () => game.coin(true));
 	init({game, sound});
 }));
-
+*/
