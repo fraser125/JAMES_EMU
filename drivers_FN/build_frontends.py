@@ -53,6 +53,11 @@ def make_html( filepath ):
   </head>
   <body>
     <script type="module" src="../'''+filepath+'''"></script><canvas id="canvas"></canvas>
+    
+    <div id="DriverInfo">
+      <p>Loading - Please Wait.</p>
+    </div>
+    
     <script>
       const audioCtx = 'AudioContext' in window && new window.AudioContext() || 'webkitAudioContext' in window && new window.webkitAudioContext();
       const canvas = document.getElementById('canvas');

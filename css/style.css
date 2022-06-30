@@ -1,16 +1,16 @@
 html {
 	height: 100%;
 	margin: auto;
-	display: table;
+	display: block;
+	color: #222323;
+	background-color: #f0f6f0;
+	font-size: 14px;
+	line-height: 5px;
 }
 body {
-	display: table-cell;
-	text-align: center;
+	text-align: left;
 	vertical-align: middle;
 	font-family: sans-serif;
-	font-size: xx-large;
-	color: white;
-	background-color: dimgray;
 }
 
 img {

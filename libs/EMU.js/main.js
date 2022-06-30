@@ -4,16 +4,8 @@
  *
  */
 
-const volume0 = 'data:image/png;base64,\
-iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAC4jAAAuIwF4pT92AAAAeElEQVR42u3XywrAIAxE0fz/T09XXRRaTCvDnYoBV7o4\
-oHlYkopctQF/B5yBAEQCRAJEAkQBRmEDdGMaMBtvUvOy7wSok7oOwBPi9rwL0M4YJ6BVsJYGoFeAPkI8DT8VIrwUxzajmHYcM5BEjGQRQ2nEWL5/RmsADqNJ\
-E6QZh85dAAAAAElFTkSuQmCC\
-';
-const volume1 = 'data:image/png;base64,\
-iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAC4jAAAuIwF4pT92AAAAfklEQVR42u2XwQrAIAxD+/8/nZ12GrhoWoolBS9SyEOl\
-iQEgOlcY4HaAt1oAQAIs+zLEofRmiEMBzhAH+TYkgL9i7/2zrwozAGAA1IrTU6gECOYUDGAAA4ydA9uTsHIUS16gmlGaG+7acVkeOAkk6YlIiWQtoXRuLPfP\
-aAbAA72UT2ikWgrdAAAAAElFTkSuQmCC\
-';
+const volume0 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAAdlJREFUaEPtV/8tREEQ/q4CVEAJOqADVIAKjgpQASpAB3RAB3RwOqAC8iUzyeblxM7NzG5esvPPJZd9+74fM9/uW2DmtZg5fgwCvR0cDgwHnAqMFnIK6H58OOCW0LlBhANnAB4A3AG4AfDlxGR6PILAT/HGFYBLAM8mFI7F0QQUCgmct3AjiwCJsJUuADw5BP730WgCBHs6eeuruMH2Cq9oAtzvEMAjgN0CLd3QIQ8lkUGAALelfa4maN/FDf6GVBYBBbcvyh9M0IZFbjYBxc1hvgawNYlcJhVnZONqRYAA98SNowlaV+S2JKC4j2XISzc45HTDfAD2IKBDzpZaroncE8sB2IuA4l4XuTxLeL+qqp4EGLWMWQ54WbwQ0p2q6kWAyvMGy8HW+hbgjNjqak2AqhM4B7msF3HCfN1oSYB9fSundKk6/zenj27QggDbhKqzbcq6l5ZxfQBlE9CoZOtofUrKuE7gbAd4B6Lq/N04YWomOdqBnT+i8UNUD7uFZjnAFHFHY43yWQTKd7+J6uZo7E2AB5IrGlsToML6+ch7DK8GrmhsTYBJQ9D8Dg6JxtYELO8LXxsRo+GgLBsOAha1MtYOBzJUtew5HLColbF2OJChqmXP2TvwC9QnXDG09TYhAAAAAElFTkSuQmCC';
+const volume1 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAAT9JREFUaEPtmOFNwzAQhb9OAEwAm5ROUNiADWgnADZoN+gGwATAJrBBOwHoVCOlrR2fdVJQxLtfTXNn+957sZM3YeQxGfn6UQN/zaAYEANBBCShIIDh8n/FwDnwANwB9jsXn8ATsCncXwD3wFXh/jbVLr3UtDCwSpN7xr4FXo4Sb4BnTzGwBqzZarQ0YOicVUfcJ7wCtuBuWENzZ73NdeHJbWnguzNgru4aeEs5H4Bdd+MdmKY/ZoBdH0dtjpMCNdCBRAwAklDfg19DRxKShCoHhySkgywjEZ3EOokPZVHbKPQy94uAXqf1PZC0oG1U26i2UY93sc8Z0lbZ9ZhnBytueYhHb2yZnfiYrMWSwfWVcvqsRXPcLgvEG/JW63LlbIwWBvxiGzBTDQwIdnYqMSAGgghIQkEAw+ViIAxhcIAf7FugMSVj+F8AAAAASUVORK5CYII=';
 let cxScreen = 512, cyScreen = 512, canvasRotation = 0;
 const ctx = canvas.getContext('2d');
 
@@ -21,8 +13,13 @@ const ctx = canvas.getContext('2d');
 	const zoom = Math.max(1, Math.min(Math.floor(window.innerWidth / cxScreen), Math.floor(window.innerHeight / cyScreen)));
 	canvas.style.width = cxScreen * zoom + 'px';
 	canvas.style.height = cyScreen * zoom + 'px';
-	canvas.style.cssText += "transform:rotate("+canvasRotation+"deg)"
-	canvas.style.cssText += "image-rendering: pixelated"
+	canvas.style.cssText += "position: absolute;"
+	canvas.style.cssText += "left: 50%; top: 50%;"
+	canvas.style.cssText += "transform:rotate("+canvasRotation+"deg) translate(-50%, -50%);"
+	canvas.style.cssText += "image-rendering: pixelated;"
+	canvas.style.cssText += "box-shadow: 1px 1px 5px #00000070;"
+	canvas.style.cssText += "border-radius: 2px;"
+  
 })();
 
 export function init({game, sound, keydown, keyup} = {}) {
@@ -47,6 +44,8 @@ export function init({game, sound, keydown, keyup} = {}) {
 	const button = new Image();
 	document.body.appendChild(button);
 	button.addEventListener('click', () => { audioCtx.state === 'suspended' ? audioCtx.resume().catch() : audioCtx.state === 'running' && audioCtx.suspend().catch(); });
+	
+	
 	document.addEventListener('keydown', keydown ? keydown : e => {
 		if (e.repeat)
 			return;

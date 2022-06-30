@@ -74,10 +74,27 @@ export default class RomBootLoader {
 		}
 		await Promise.all(files);
 		
+		
+		
 		this.dict.settings = settings
+		
+		
+		// PRINTING INFO
 		console.log("LOADIED: "+settings.display_name)
 		console.log("BY:      "+settings.developer+" ("+settings.year+")")
 		console.log("NOTES:   "+settings.Notes)
+		
+		
+		// ON-SCREEN INFO
+		var mylist = document.getElementById('DriverInfo');
+		mylist.innerHTML = '';
+		mylist.insertAdjacentHTML('beforeend', '<p>'+settings.display_name+'</p>');
+		mylist.insertAdjacentHTML('beforeend', '<p>By: '+settings.developer+" ("+settings.year+')</p>');
+		mylist.insertAdjacentHTML('beforeend', '<p><br>NOTES: '+settings.Notes+'</p>');
+		
+		
+		
+		
 		return this.dict;
 	}
 }
