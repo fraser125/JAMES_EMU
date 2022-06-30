@@ -19,7 +19,7 @@ class RallyX {
 	height = 512;
 	xOffset = 16;
 	yOffset = 19;
-	rotate = 0;
+	rotate = 3;
 
 	fReset = false;
 	fTest = false;
@@ -283,14 +283,14 @@ class RallyX {
 	}
 
 	drawBG(data, pri) {
-		//scrolling area
+		//scrolling parts
 		let p = 256 * (8 * 2 + 3) + 232 + (this.mmo[0x140] & 7) - (this.mmo[0x130] & 7) * 256;
 		let k = 0x400 + (this.mmo[0x140] + 0x10 << 2 & 0x3e0 | this.mmo[0x130] >> 3);
 		for (let i = 0; i < 29; k = k + 3 & 0x1f | k + 0x20 & 0x3e0 | 0x400, p -= 256 * 8 * 29 + 8, i++)
 			for (let j = 0; j < 29; k = k + 1 & 0x1f | k & 0x7e0, p += 256 * 8, j++)
 				this.xfer8x8(data, p, k, pri);
 
-		//fixed part
+		//fixed parts
 		p = 256 * 8 * 34 + 232;
 		k = 0x0040;
 		for (let i = 0; i < 28; k += 24, p -= 8, i++) {
@@ -667,6 +667,120 @@ class RallyX {
 				if ((px = COLOR[idx | this.obj[--src]]))
 					data[dst] = px;
 	}
+}
+
+/*
+ *
+ *	New Rally-X
+ *
+ */
+
+class NewRallyX extends RallyX {
+	
+	constructor() {
+		//SETUP CPU
+		this.mmi[0x100] = 0xc5;
+
+		for (let i = 0; i < 0x40; i++)
+			this.cpu.memorymap[i].base = PRG.base[i];
+		for (let i = 0; i < 0x10; i++) {
+			this.cpu.memorymap[0x80 + i].base = this.ram.base[i];
+			this.cpu.memorymap[0x80 + i].write = null;
+		}
+		for (let i = 0; i < 0x08; i++) {
+			this.cpu.memorymap[0x98 + i].base = this.ram.base[0x10 + i];
+			this.cpu.memorymap[0x98 + i].write = null;
+		}
+		for (let i = 0; i < 0x02; i++) {
+			this.cpu.memorymap[0xa0 + i].base = this.mmi.base[i];
+			this.cpu.memorymap[0xa0 + i].write = (addr, data) => {
+				switch (addr >> 4 & 0xfff) {
+				case 0xa10:
+				case 0xa11:
+					return sound[0].write(addr, data);
+				case 0xa18:
+					switch (addr & 0xf) {
+					case 0:
+						if (data === 0xfe) // this line is the only thing that changed (is it even needed?)
+							this.se[0].start = this.se[0].stop = true;
+						break;
+					case 1:
+						this.fInterruptEnable = (data & 1) !== 0, this.cpu_irq = false;
+						break;
+//					case 2:
+//						sound[0].control(data & 1);
+//						break;
+					}
+					//fallthrough
+				default:
+					return void(this.mmo[addr & 0x1ff] = data);
+				}
+			};
+		}
+		for (let i = 0; i < 0x100; i++)
+			this.cpu.iomap[i].write = (addr, data) => { !(addr & 0xff) && (this.intvec = data, this.cpu_irq = false); };
+
+		this.cpu.check_interrupt = () => { return this.cpu_irq && this.cpu.interrupt(this.intvec); };
+
+		//SETUP VIDEO
+		convertGFX(this.bg, BGOBJ, 256, rseq(8, 0, 8), seq(4, 64).concat(seq(4)), [0, 4], 16);
+		convertGFX(this.obj, BGOBJ, 64, rseq(8, 256, 8).concat(rseq(8, 0, 8)), seq(4, 64).concat(seq(4, 128), seq(4, 192), seq(4)), [0, 4], 64);
+	}
+
+	updateStatus() {
+		//DIP SWITCH UPDATE
+		if (this.fDIPSwitchChanged) {
+			this.fDIPSwitchChanged = false;
+			switch (this.nMyCar) {
+			case 3:
+				this.mmi[0x100] &= ~8;
+				break;
+			case 4:
+				this.mmi[0x100] |= 8;
+				break;
+			}
+			switch (this.nBonus) {
+			case 'NOTHING':
+				this.mmi[0x100] &= ~6;
+				break;
+			case 'A':
+				this.mmi[0x100] = this.mmi[0x100] & ~6 | 2;
+				break;
+			case 'B':
+				this.mmi[0x100] = this.mmi[0x100] & ~6 | 4;
+				break;
+			case 'C':
+				this.mmi[0x100] |= 6;
+				break;
+			}
+			if (!this.fTest)
+				this.fReset = true;
+		}
+
+		if (this.fTest)
+			this.mmi[0x100] &= ~1;
+		else
+			this.mmi[0x100] |= 1;
+
+		//RESET
+		if (this.fReset) {
+			this.fReset = false;
+			this.cpu_irq = false;
+			this.cpu.reset();
+		}
+		return this;
+	}
+
+}
+
+/*
+ *
+ *	Jungler
+ *
+ */
+
+class Jungler extends RallyX {
+	rotate = 2;
 }
 
 /*
@@ -1196,16 +1310,17 @@ o/62/s7+3f7b/tP+0f7C/rT+uf66/sf+1/7y/gj/B/8I/wb///7//vf+7/7o/ur+6P7y/vj+9P74/v3+
 z//f//3/9f///w==\
 ').split('').map(c => c.charCodeAt(0))).buffer);
 
-/*
- *
- *	Rally-X
- *
- */
+
  
 
 const RBL = new RomBootLoader();
 
 const RomSetInfo = [
+	/*
+	 *
+	 *	Rally-X
+	 *
+	 */
 	{
 		// Mame name  'rallyx'
 		display_name: 'Rally X (32k Ver.?)',
@@ -1216,7 +1331,7 @@ const RomSetInfo = [
 		archive_name: 'rallyx',
 		driver: RallyX,
 		mappings: [
-		// unused: 'rx1-2.4n', 'rx1-3.7k'
+		// unused: 'rx1-2.4n', 'rx1-3.7k', 'rx1-6.8m', 'rx1-6.8m'
 		{
 			name: 'RGB',
 			roms: ['rx1-1.11n'],
@@ -1228,10 +1343,6 @@ const RomSetInfo = [
 		{
 			name: 'PRG',
 			roms: ['1b', 'rallyxn.1e', 'rallyxn.1h', 'rallyxn.1k'],
-		},
-		{
-			name: 'OBJ',
-			roms: ['rx1-6.8m'],
 		},
 		{
 			name: 'BGOBJ',
@@ -1253,7 +1364,7 @@ const RomSetInfo = [
 		archive_name: 'rallyx',
 		driver: RallyX,
 		mappings: [
-		// unused: 'rx1-2.4n', 'rx1-3.7k'
+		// unused: 'rx1-2.4n', 'rx1-3.7k', 'rx1-6.8m'
 		{
 			name: 'RGB',
 			roms: ['rx1-1.11n'],
@@ -1265,10 +1376,6 @@ const RomSetInfo = [
 		{
 			name: 'PRG',
 			roms: ['rx1_prg_1.1b', 'rx1_prg_2.1c', 'rx1_prg_3.1d', 'rx1_prg_4.1e', 'rx1_prg_5.bin', 'rx1_prg_6.bin', 'rx1_prg_7.1k', 'rx1_prg_8.1l'],
-		},
-		{
-			name: 'OBJ',
-			roms: ['rx1-6.8m'],
 		},
 		{
 			name: 'BGOBJ',
@@ -1290,7 +1397,7 @@ const RomSetInfo = [
 		archive_name: 'rallyx',
 		driver: RallyX,
 		mappings: [
-		// unused: 'rx1-2.4n', 'rx1-3.7k'
+		// unused: 'rx1-2.4n', 'rx1-3.7k', 'rx1-6.8m'
 		{
 			name: 'RGB',
 			roms: ['rx1-1.11n'],
@@ -1302,10 +1409,6 @@ const RomSetInfo = [
 		{
 			name: 'PRG',
 			roms: ['1b', '1e', '1h', '1k'],
-		},
-		{
-			name: 'OBJ',
-			roms: ['rx1-6.8m'],
 		},
 		{
 			name: 'BGOBJ',
@@ -1327,7 +1430,7 @@ const RomSetInfo = [
 		archive_name: 'rallyx',
 		driver: RallyX,
 		mappings: [
-		// unused: 'rx1-2.4n', 'rx1-3.7k'
+		// unused: 'rx1-2.4n', 'rx1-3.7k', 'rx1-6.8m'
 		{
 			name: 'RGB',
 			roms: ['rx1-1.11n'],
@@ -1339,10 +1442,6 @@ const RomSetInfo = [
 		{
 			name: 'PRG',
 			roms: ['166.bin', '167.bin', '168.bin', '169.bin', '170.bin', '171.bin', '172.bin', '173.bin'],
-		},
-		{
-			name: 'OBJ',
-			roms: ['rx1-6.8m'],
 		},
 		{
 			name: 'BGOBJ',
@@ -1364,7 +1463,7 @@ const RomSetInfo = [
 		archive_name: 'rallyx',
 		driver: RallyX,
 		mappings: [
-		// unused: 'rx1-2.4n', 'rx1-3.7k'
+		// unused: 'rx1-2.4n', 'rx1-3.7k', 'rx1-6.8m'
 		{
 			name: 'RGB',
 			roms: ['rx1-1.11n'],
@@ -1378,10 +1477,6 @@ const RomSetInfo = [
 			roms: ['1b-2716.bin', '1c-2716.bin', '1d-2716.bin', '1e-2716.bin', '1h-2716.bin', '1j-2716.bin', '1k-2716.bin', '1l-2716.bin'],
 		},
 		{
-			name: 'OBJ',
-			roms: ['rx1-6.8m'],
-		},
-		{
 			name: 'BGOBJ',
 			roms: ['8e-2716.bin', '8d-2716.bin'],
 		},
@@ -1391,11 +1486,258 @@ const RomSetInfo = [
 		},
 		]
 	},
+	
+	
+	
+	
+	/*
+	 *
+	 *	New Rally-X
+	 *
+	 */
+	{
+		// Mame name  'nrallyx'
+		display_name: 'New Rally X',
+		developer: 'Namco',
+		year: '1981',
+		Notes: 'TODO: refuses to boot up correctly ROM CHECK FLASHES',
 
+		archive_name: 'nrallyx',
+		driver: NewRallyX,
+		mappings: [
+		// unused: 'nrx1-2.4n', 'nrx1-3.7k'
+		{
+			name: 'RGB',
+			roms: ['nrx1-1.11n'],
+		},
+		{
+			name: 'COLOR',
+			roms: ['nrx1-7.8p'],
+		},
+		{
+			name: 'PRG',
+			roms: ['nrx_prg1.1d', 'nrx_prg2.1e', 'nrx_prg3.1k', 'nrx_prg4.1l'],
+		},
+		{
+			name: 'BGOBJ',
+			roms: ['nrx_chg1.8e', 'nrx_chg2.8d'],
+		},
+		{
+			name: 'SND',
+			roms: ['rx1-5.3p', 'rx1-4.2m'],
+		},
+		]
+	},
+	{
+		// Mame name  'nrallyxb'
+		display_name: 'New Rally X (bootleg?)',
+		developer: 'Namco',
+		year: '1981',
+		Notes: '~AUTO PORTED PLEASE TEST~',
+
+		archive_name: 'nrallyx',
+		driver: NewRallyX,
+		mappings: [
+		// unused: 'nrx1-2.4n', 'nrx1-3.7k'
+		{
+			name: 'RGB',
+			roms: ['nrx1-1.11n'],
+		},
+		{
+			name: 'COLOR',
+			roms: ['nrx1-7.8p'],
+		},
+		{
+			name: 'PRG',
+			roms: ['nrallyx.1b', 'nrallyx.1e', 'nrallyx.1h', 'nrallyx.1k'],
+		},
+		{
+			name: 'BGOBJ',
+			roms: ['nrallyx.8e'],
+		},
+		{
+			name: 'SND',
+			roms: ['rx1-5.3p', 'rx1-4.2m'],
+		},
+		]
+	},
+
+
+	/*
+	 *
+	 *	Jungler
+	 *
+	 */
+	 
+	{
+		// Mame name  'jungler'
+		display_name: 'Jungler',
+		developer: 'Konami',
+		year: '1981',
+		Notes: '~AUTO PORTED PLEASE TEST~',
+
+		archive_name: 'jungler',
+		driver: Jungler,
+		mappings: [ // unused: '18s030.7a', '6331-1.10a'
+		{
+			name: 'SND',
+			roms: ['1b'],
+		},
+		{
+			name: 'RGB',
+			roms: ['18s030.8b'],
+		},
+		{
+			name: 'COLOR',
+			roms: ['tbp24s10.9d'],
+		},
+		{
+			name: 'PRG',
+			roms: ['jungr1', 'jungr2', 'jungr3', 'jungr4'],
+		},
+		{
+			name: 'OBJ',
+			roms: ['82s129.10g'],
+		},
+		{
+			name: 'BGOBJ',
+			roms: ['5k', '5m'],
+		},
+		]
+	},
+	{
+		// Mame name  'junglers'
+		display_name: 'Jungler (Stern Electronics)',
+		developer: 'Konami (Stern Electronics license)',
+		year: '1981',
+		Notes: '~AUTO PORTED PLEASE TEST~',
+
+		archive_name: 'jungler',
+		driver: Jungler,
+		mappings: [
+		{
+			name: 'SND',
+			roms: ['1b'],
+		},
+		{
+			name: 'proms',
+			roms: ['18s030.8b', 'tbp24s10.9d', '18s030.7a', '6331-1.10a'],
+		},
+		{
+			name: 'PRG',
+			roms: ['5c', '5a', '4d', '4c'],
+		},
+		{
+			name: 'OBJ',
+			roms: ['82s129.10g'],
+		},
+		{
+			name: 'BGOBJ',
+			roms: ['5k', '5m'],
+		},
+		]
+	},
+	{
+		// Mame name  'junglero'
+		display_name: 'Jungler (Olympia)',
+		developer: 'Konami (Olympia license)',
+		year: '1981',
+		Notes: '~AUTO PORTED PLEASE TEST~',
+
+		archive_name: 'jungler',
+		driver: Jungler,
+		mappings: [
+		{
+			name: 'SND',
+			roms: ['js1.bin'],
+		},
+		{
+			name: 'proms',
+			roms: ['dm74s288n.jn2', 'tbp24s10.jn5', 'dm74s288n.jn1', 'mb7051.jn3'],
+		},
+		{
+			name: 'PRG',
+			roms: ['j1.bin', 'j2.bin', 'j3.bin', 'j4.bin'],
+		},
+		{
+			name: 'OBJ',
+			roms: ['am27s21dc.jn4'],
+		},
+		{
+			name: 'BGOBJ',
+			roms: ['j5.bin', 'j6.bin'],
+		},
+		]
+	},
+	{
+		// Mame name  'jackler'
+		display_name: 'Jackler (Jungler bootleg)',
+		developer: 'bootleg',
+		year: '1982',
+		Notes: '~AUTO PORTED PLEASE TEST~',
+
+		archive_name: 'jungler',
+		driver: Jungler,
+		mappings: [
+		{
+			name: 'SND',
+			roms: ['1b'],
+		},
+		{
+			name: 'proms',
+			roms: ['18s030.8b', 'tbp24s10.9d', '18s030.7a', '6331-1.10a'],
+		},
+		{
+			name: 'PRG',
+			roms: ['jackler_j1.r1', 'jackler_j2.r2', 'jungr3', 'jungr4'],
+		},
+		{
+			name: 'OBJ',
+			roms: ['82s129.10g'],
+		},
+		{
+			name: 'BGOBJ',
+			roms: ['jackler_j5.r9', 'jackler_j6.r10'],
+		},
+		]
+	},
+	
+	{
+		// Mame name  'savanna'
+		display_name: 'Savanna (Jungler bootleg)',
+		developer: 'bootleg (Olympia)',
+		year: '1982',
+		Notes: '~AUTO PORTED PLEASE TEST~',
+
+		archive_name: 'jungler',
+		driver: Jungler,
+		mappings: [
+		{
+			name: 'SND',
+			roms: ['1b'],
+		},
+		{
+			name: 'proms',
+			roms: ['18s030.8b', 'tbp24s10.9d', '18s030.7a', '6331-1.10a'],
+		},
+		{
+			name: 'PRG',
+			roms: ['sav1.bin', 'sav2.bin', 'sav3.bin', 'sav4.bin'],
+		},
+		{
+			name: 'OBJ',
+			roms: ['82s129.10g'],
+		},
+		{
+			name: 'BGOBJ',
+			roms: ['5k', '5m'],
+		},
+		]
+	},
 ]
 
 
-let ROM_INDEX = 1//RomSetInfo.length-1
+let ROM_INDEX = 0//7//RomSetInfo.length-1
 console.log("TOTAL ROMSETS AVALIBLE: "+RomSetInfo.length)
 console.log("GAME INDEX: "+(ROM_INDEX+1))
 
