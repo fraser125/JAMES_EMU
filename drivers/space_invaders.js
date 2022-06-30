@@ -30,7 +30,7 @@ class SpaceInvaders_TV {
 	
 	fTestButton = false;
 
-	fReset = false;
+	fReset = true;
 	fDIPSwitchChanged = true;
 	fCoin = 0;
 	fStart1P = 0;
@@ -38,7 +38,7 @@ class SpaceInvaders_TV {
 	nStock = 3;
 	nExtend = 1000;
 
-	ram = new Uint8Array(0x2000).addBase();
+	ram = new Uint8Array(0x20000).addBase();
 	io = new Uint8Array(0x100);
 	cpu_irq = false;
 	cpu_irq2 = false;
@@ -786,7 +786,7 @@ const RomSetInfo = [
 ]
 
 
-let ROM_INDEX = RomSetInfo.length-1
+let ROM_INDEX = 0//RomSetInfo.length-1
 console.log("TOTAL ROMSETS AVALIBLE: "+RomSetInfo.length)
 console.log("GAME INDEX: "+(ROM_INDEX+1))
 

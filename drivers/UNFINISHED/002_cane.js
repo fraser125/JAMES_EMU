@@ -8,7 +8,7 @@
  *        Add Shooting
  */
  
- // remake from Space Invaders with this rendering IO stuff.
+ // Lot is simmler to 8080 Space Invadors (maybe could be merged once its working correctly?)
 
  
 
@@ -24,7 +24,9 @@ class Cane {
 	height = 256;
 	xOffset = 0;
 	yOffset = 0;
-	rotate = 1
+	rotate = 0;
+	
+	fTestButton = false;
 
 	fReset = true;
 	fDIPSwitchChanged = true;
@@ -49,7 +51,6 @@ class Cane {
 		for (this.frac += this.rate; this.frac >= rate; this.frac -= rate)
 			fn(this.count = this.count + 1 & 255);
 	}};
-	shift = 0;
 
 	constructor() {
 		//SETUP CPU
@@ -66,10 +67,12 @@ class Cane {
 		this.cpu.iomap.base = this.io;
 		this.cpu.iomap.write = (addr, data) => {
 			switch (addr) {
+			case 0x00:
+			case 0x01:
 			case 0x02:
 				this.shifter.shift = data;
 			default:
-				this.io[addr] = data;
+				return void(this.io[addr] = data);
 			}
 		};
 		this.cpu.iomap.read = (addr) => {
@@ -104,6 +107,33 @@ class Cane {
 	}
 
 	updateStatus() {
+		//DIP SWITCH UPDATE
+		if (this.fDIPSwitchChanged) {
+			this.fDIPSwitchChanged = false;
+			switch (this.nStock) {
+			case 3:
+				this.io[2] &= ~3;
+				break;
+			case 4:
+				this.io[2] = this.io[2] & ~3 | 1;
+				break;
+			case 5:
+				this.io[2] = this.io[2] & ~3 | 2;
+				break;
+			case 6:
+				this.io[2] |= 3;
+				break;
+			}
+			switch (this.nExtend) {
+			case 1000:
+				this.io[2] |= 8;
+				break;
+			case 1500:
+				this.io[2] &= ~8;
+				break;
+			}
+			this.fReset = true;
+		}
 
 		//RESET
 		if (this.fReset) {
@@ -118,6 +148,7 @@ class Cane {
 	updateInput() {
 		this.io[1] = this.io[1] & ~7 | !this.fCoin << 0 | !!this.fStart1P << 2 | !!this.fStart2P << 1;
 		this.fCoin -= !!this.fCoin, this.fStart1P -= !!this.fStart1P, this.fStart2P -= !!this.fStart2P;
+		this.io[0] = !this.fTestButton
 		return this;
 	}
 
@@ -245,7 +276,7 @@ const RomSetInfo = [
 ]
 
 
-let ROM_INDEX = RomSetInfo.length-1
+let ROM_INDEX = 0
 console.log("TOTAL ROMSETS AVALIBLE: "+RomSetInfo.length)
 console.log("GAME INDEX: "+(ROM_INDEX+1))
 
