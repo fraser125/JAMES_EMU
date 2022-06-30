@@ -50,7 +50,7 @@ class WarpAndWarp {
 		this.ram[0xc24] = 0xfe;
 		this.ram[0xc25] = 0xfe;
 
-		for (let i = 0; i < 0x30; i++)
+		for (let i = 0; i < 0x40; i++)
 			this.cpu.memorymap[i].base = PRG.base[i];
 		for (let i = 0; i < 8; i++) {
 			this.cpu.memorymap[0x40 + i].base = this.ram.base[i];
@@ -3484,6 +3484,15 @@ CAABAP7/AwD7//r/9//3//n/8P/5//D/8P/5//3/8v/z/+//+P/8//H/+v/z//b/9P/4//L/+P/1//P/
  *	Warp & Warp
  *
  */
+class WarpAndWarp_alt extends WarpAndWarp {
+	
+}
+
+/*
+ *
+ *	Warp & Warp
+ *
+ */
 
 const RBL = new RomBootLoader();
 const RomSetInfo = [
@@ -3493,7 +3502,7 @@ const RomSetInfo = [
 		display_name: 'Warp & Warp',
 		developer: 'Namco',
 		year: '1981',
-		Notes: '~AUTO PORTED PLEASE TEST~',
+		Notes: '',
 
 		archive_name: 'warpwarp',
 		driver: WarpAndWarp,
@@ -3513,7 +3522,7 @@ const RomSetInfo = [
 		display_name: 'Warp Warp (Rock-Ola set 1)',
 		developer: 'Namco (Rock-Ola license)',
 		year: '1981',
-		Notes: '~AUTO PORTED PLEASE TEST~',
+		Notes: '',
 
 		archive_name: 'warpwarp',
 		driver: WarpAndWarp,
@@ -3533,7 +3542,7 @@ const RomSetInfo = [
 		display_name: 'Warp Warp (Rock-Ola set 2)',
 		developer: 'Namco (Rock-Ola license)',
 		year: '1981',
-		Notes: '~AUTO PORTED PLEASE TEST~',
+		Notes: '',
 
 		archive_name: 'warpwarp',
 		driver: WarpAndWarp,
@@ -3548,9 +3557,197 @@ const RomSetInfo = [
 		},
 		]
 	},
+	
+	//// NON- Warp & Warp Games
+	
+	
+	
+	/*
+	{
+		// Mame name  'cutieq'
+		display_name: 'Cutie Q',
+		developer: 'Namco',
+		year: '1979',
+		Notes: 'TODO: Errors out emu after romcheck screen',
+
+		archive_name: 'cutieq',
+		driver: WarpAndWarp,
+		mappings: [
+		{
+			name: 'PRG',
+			roms: ['cutieq.1k'],
+		},
+		{
+			name: 'BG',
+			roms: ['cutieq.4c'],
+		},
+		]
+	},
+	{
+		// Mame name  'bombbee'
+		display_name: 'Bomb Bee',
+		developer: 'Namco',
+		year: '1979',
+		Notes: 'TODO: Errors out emu on boot',
+
+		archive_name: 'bombbee',
+		driver: WarpAndWarp,
+		mappings: [
+		{
+			name: 'PRG',
+			roms: ['bombbee.1k'],
+		},
+		{
+			name: 'BG',
+			roms: ['bombbee.4c'],
+		},
+		]
+	},
+	
+	{
+		// Mame name  'kaitei'
+		display_name: 'Kaitei Takara Sagashi',
+		developer: 'K.K. Tokki',
+		year: '1980',
+		Notes: 'TODO: Errors out emu on boot',
+
+		archive_name: 'kaitei',
+		driver: WarpAndWarp,
+		mappings: [
+		{
+			name: 'PRG',
+			roms: ['kaitei_7.1k', 'kaitei_1.1m', 'kaitei_2.1p', 'kaitei_3.1s', 'kaitei_4.1t'],
+		},
+		{
+			name: 'BG',
+			roms: ['kaitei_5.bin', 'kaitei_6.bin'],
+		},
+		]
+	},
+	{
+		// Mame name  'kaitein'
+		display_name: 'Kaitei Takara Sagashi (Namco license)',
+		developer: 'K.K. Tokki (Namco license)',
+		year: '1980',
+		Notes: '~AUTO PORTED PLEASE TEST~',
+
+		archive_name: 'kaitei',
+		Notes: 'TODO: Errors out emu mid check?',
+		driver: WarpAndWarp,
+		mappings: [
+		{
+			name: 'PRG',
+			roms: ['kaitein.p1', 'kaitein.p2'],
+		},
+		{
+			name: 'BG',
+			roms: ['kaitein.chr'],
+		},
+		]
+	},
+	{
+		// Mame name  'navarone'
+		display_name: 'Navarone',
+		developer: 'Namco',
+		year: '(1980',
+		Notes: 'TODO: Errors out emu on boot',
+
+		archive_name: 'navarone',
+		driver: WarpAndWarp,
+		mappings: [
+		{
+			name: 'PRG',
+			roms: ['navalone.p1', 'navalone.p2'],
+		},
+		{
+			name: 'BG',
+			roms: ['navalone.chr'],
+		},
+		]
+	},
+	{
+		// Mame name  'sos'
+		display_name: 'SOS Game',
+		developer: 'K.K. Tokki (Namco license)',
+		year: '1979',
+		Notes: 'TODO: Errors out emu mid check?',
+
+		archive_name: 'sos',
+		driver: WarpAndWarp,
+		mappings: [
+		{
+			name: 'PRG',
+			roms: ['sos.p1', 'sos.p2'],
+		},
+		{
+			name: 'BG',
+			roms: ['sos.chr'],
+		},
+		]
+	},
+	{
+		// Mame name  'geebee'
+		display_name: 'Gee Bee (Japan)',
+		developer: 'Namco',
+		year: '(1978',
+		Notes: 'TODO: gets stuck on boot?',
+
+		archive_name: 'geebee',
+		driver: WarpAndWarp,
+		mappings: [
+		{
+			name: 'PRG',
+			roms: ['geebee.1k'],
+		},
+		{
+			name: 'BG',
+			roms: ['geebee.3a'],
+		},
+		]
+	},
+	{
+		// Mame name  'geebeeg'
+		display_name: 'Gee Bee (US)',
+		developer: 'Namco (Gremlin license)',
+		year: '(1978',
+		Notes: 'TODO: gets stuck on boot?',
+
+		archive_name: 'geebee',
+		driver: WarpAndWarp,
+		mappings: [
+		{
+			name: 'PRG',
+			roms: ['geebee.1k'],
+		},
+		{
+			name: 'BG',
+			roms: ['geebeeg.3a'],
+		},
+		]
+	},
+	{
+		// Mame name  'geebeea'
+		display_name: 'Gee Bee (UK)',
+		developer: 'Namco (Alca license)',
+		year: '(1978',
+		Notes: '~AUTO PORTED PLEASE TEST~',
+
+		archive_name: 'geebee',
+		driver: WarpAndWarp,
+		mappings: [
+		{
+			name: 'PRG',
+			roms: ['132', '133', '134', '135'],
+		},
+		{
+			name: 'BG',
+			roms: ['a_136'],
+		},
+		]
+	},/**/
 ]
 
-let ROM_INDEX = 0
+let ROM_INDEX = RomSetInfo.length-1
 console.log("TOTAL ROMSETS AVALIBLE: "+RomSetInfo.length)
 console.log("GAME INDEX: "+(ROM_INDEX+1))
 
@@ -3572,20 +3769,3 @@ window.addEventListener('load', () =>
 	})
 );
 
-
-/*
-import {ROM} from "../roms/warp_and_warp.png.js";
-let PRG, BG;
-
-window.addEventListener('load', () => expand(ROM).then(ROM => {
-	PRG = new Uint8Array(ROM.buffer, 0x0, 0x3000).addBase();
-	BG = new Uint8Array(ROM.buffer, 0x3000, 0x800).addBase();
-	game = new WarpAndWarp();
-	sound = [
-		new WarpAndWarpSound(),
-		new SoundEffect({se: game.se, gain:0.5}),
-	];
-	canvas.addEventListener('click', () => game.coin(true));
-	init({game, sound});
-}));
-*/
