@@ -25,11 +25,6 @@ export default class Sega2Z80 extends Z80 {
 		}
 	}
 
-	fetchM1() {
-		const addr = this.pc;
-		return this.code_table[index[addr] << 8 | super.fetchM1()];
-	}
-
 	fetch() {
 		const addr = this.pc;
 		return this.data_table[index[addr] << 8 | super.fetch()];

@@ -91,7 +91,7 @@ export default class Z80 extends Cpu {
 	}
 
 	_execute() {
-		let v, op = this.fetchM1();
+		let v, op = this.fetch();
 		this.cycle -= cc_op[op], this.r = this.r & 0x80 | this.r + 1 & 0x7f;
 		switch (op) {
 		case 0x00: // NOP
@@ -613,7 +613,7 @@ export default class Z80 extends Cpu {
 	}
 
 	execute_cb() {
-		let v, op = this.fetchM1();
+		let v, op = this.fetch();
 		this.cycle -= cc_cb[op];
 		switch (op) {
 		case 0x00: // RLC B
@@ -1120,7 +1120,7 @@ export default class Z80 extends Cpu {
 	}
 
 	execute_dd() {
-		let v, op = this.fetchM1();
+		let v, op = this.fetch();
 		this.cycle -= cc_xy[op];
 		switch (op) {
 		case 0x09: // ADD IX,BC
@@ -1363,7 +1363,7 @@ export default class Z80 extends Cpu {
 	}
 
 	execute_ed() {
-		let v, op = this.fetchM1();
+		let v, op = this.fetch();
 		this.cycle -= cc_ed[op];
 		switch (op) {
 		case 0x40: // IN B,(C)
@@ -1486,7 +1486,7 @@ export default class Z80 extends Cpu {
 	}
 
 	execute_fd() {
-		let v, op = this.fetchM1();
+		let v, op = this.fetch();
 		this.cycle -= cc_xy[op];
 		switch (op) {
 		case 0x09: // ADD IY,BC
@@ -1962,14 +1962,6 @@ export default class Z80 extends Cpu {
 
 	split(v) {
 		return [v & 0xff, v >> 8];
-	}
-
-	fetchM1() {
-//		const page = this.memorymap[this.pc >> 8];
-//		const data = !page.fetch ? page.base[this.pc & 0xff] : page.fetch(this.pc);
-		const data = this.memorymap[this.pc >> 8].base[this.pc & 0xff];
-		this.pc = this.pc + 1 & 0xffff;
-		return data;
 	}
 
 	fetch16() {

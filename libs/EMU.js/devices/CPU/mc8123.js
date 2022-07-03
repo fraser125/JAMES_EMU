@@ -20,11 +20,6 @@ export default class MC8123 extends Z80 {
 		}
 	}
 
-	fetchM1() {
-		const addr = this.pc;
-		return code_table[this.code_key[addr] << 8 | super.fetchM1()];
-	}
-
 	fetch() {
 		const addr = this.pc;
 		return data_table[this.data_key[addr] << 8 | super.fetch()];
