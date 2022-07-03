@@ -6,7 +6,8 @@
 
 
 /*
- * THIS LIKELY DOESNT WORK AT ALL! UNTESTED AND HACKY!!
+ * `OPCODE[]` is ripped directly from https://github.com/taisel/GameBoy-Online/blob/master/js/GameBoyCore.js,
+ * !!!!!!!!!!THIS MEANS ITS USEING NON EXISTENT FUNTIONS!!!!!!!!!!
  * 
  * 
  * When i say "unchanged from z80.js" the code is unchanged but could also be unused leftovers too.
@@ -109,7 +110,7 @@ export default class Z80 extends Cpu {
 		
 	}
 
-	OPCODE = [
+	OPCODE = [ // RIPPED FROM "https://github.com/taisel/GameBoy-Online/blob/master/js/GameBoyCore.js" UPDATE FOR API CHANGES
 		//NOP
 		//#0x00:
 		function (parentObj) {
